@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="tests\**" />
+    <Content Remove="tests\**" />
+    <EmbeddedResource Remove="tests\**" />
+    <None Remove="tests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11" />
@@ -22,12 +29,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
     <PackageReference Include="xunit" Version="2.9.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="tests\Domain.Tests\" />
-    <Folder Include="tests\Infrastructure.Tests\" />
-    <Folder Include="tests\Api.Tests\" />
   </ItemGroup>
 
   <ItemGroup>
