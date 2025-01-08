@@ -18,9 +18,16 @@ namespace FIAP.Contatos.Services
             return await _contatoRepository.GetAllAsync(ddd);
         }
 
-        public async Task AddContatoAsync(Contato contato)
+        public async Task<bool> AddContatoAsync(Contato contato)
         {
+            Contato contatoRecebido = await _contatoRepository.GetByIdAsync(contato.Id);
+            if (contatoRecebido != null)
+            {
+                return false;
+            }
+
             await _contatoRepository.AddAsync(contato);
+            return true;
         }
 
         public async Task UpdateContatoAsync(Contato contato)

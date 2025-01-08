@@ -27,7 +27,7 @@ namespace FIAP.Contatos.Controller
             {
                 if (ddd != null)
                     return Ok(contatos.Where(x => x.Ddd == ddd));
-                
+
                 return Ok(contatos);
             }
 
@@ -40,7 +40,13 @@ namespace FIAP.Contatos.Controller
         [HttpPost("/InsereContato")]
         public async Task<IActionResult> CreateContato([FromBody] Contato contato)
         {
-            await _contatoService.AddContatoAsync(contato);
+            // bool success = await _contatoService.AddContatoAsync(contato);
+
+            // if (!success)
+            // {
+            //     return Conflict(new { Message = "Um contato com o Id informado já existe" });
+            // }
+
             _contatoCache.Set(await _contatoService.GetContatosAsync());
             return CreatedAtAction(nameof(GetContatos), new { id = contato.Id }, contato);
         }
