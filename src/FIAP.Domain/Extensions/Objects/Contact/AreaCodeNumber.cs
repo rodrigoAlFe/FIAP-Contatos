@@ -10,8 +10,8 @@ public class AreaCodeNumber(string areaCode)
 {
     [Required(ErrorMessage = "O código de área é obrigatório")]
     [Display(Name = "Código de Área", Description = "DDD do telefone")]
-    [RegularExpression(@"^\([1-9][0-9]\)$"
-        , ErrorMessage = "O código de área (DDD) é inválido.")]
+    [RegularExpression(@"^[1-9][0-9]$"
+        , ErrorMessage = "O código de área inválido.")]
     public string Value { get; } = areaCode;
     
     public static implicit operator string(AreaCodeNumber? areaCodeNumber)
