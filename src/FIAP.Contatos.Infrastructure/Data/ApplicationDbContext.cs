@@ -15,7 +15,7 @@ namespace FIAP.Contatos.Infrastructure.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL(b => b.MigrationsAssembly("FIAP.Contatos"));
+            optionsBuilder.UseMySQL(b => b.MigrationsAssembly("FIAP.Contatos.Api"));
         }
 
     }
