@@ -1,0 +1,6 @@
+﻿services:
+  fiap.api:
+    image: fiap.api
+    build:
+      context: .
+      dockerfile: src/FIAP.Api/Dockerfile

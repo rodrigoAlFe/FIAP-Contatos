@@ -17,4 +17,9 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FIAP.CrossCutting\FIAP.CrossCutting.csproj" />
+      <ProjectReference Include="..\FIAP.Infrastructure\FIAP.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>
