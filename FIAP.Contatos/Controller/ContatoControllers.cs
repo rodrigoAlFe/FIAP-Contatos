@@ -19,7 +19,7 @@ namespace FIAP.Contatos.Controller
             _contatoCache = contatoCache;
         }
 
-        [HttpGet]
+        [HttpGet("/BuscaContatos")]
         public async Task<ActionResult<List<Contato>>> GetContatos([FromQuery] int? ddd)
         {
             List<Contato>? contatos = await _contatoCache.Get();
@@ -37,7 +37,7 @@ namespace FIAP.Contatos.Controller
             return Ok(contatos);
         }
 
-        [HttpPost]
+        [HttpPost("/InsereContato")]
         public async Task<IActionResult> CreateContato([FromBody] Contato contato)
         {
             await _contatoService.AddContatoAsync(contato);
@@ -45,7 +45,7 @@ namespace FIAP.Contatos.Controller
             return CreatedAtAction(nameof(GetContatos), new { id = contato.Id }, contato);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("/AtualizaContato{id}")]
         public async Task<IActionResult> UpdateContato(int id, [FromBody] Contato contato)
         {
             if (id != contato.Id)
@@ -56,7 +56,7 @@ namespace FIAP.Contatos.Controller
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("/DeletaContato{id}")]
         public async Task<IActionResult> DeleteContato(int id)
         {
             await _contatoService.DeleteContatoAsync(id);
