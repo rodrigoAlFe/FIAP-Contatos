@@ -40,12 +40,12 @@ namespace FIAP.Contatos.Controller
         [HttpPost("/InsereContato")]
         public async Task<IActionResult> CreateContato([FromBody] Contato contato)
         {
-            // bool success = await _contatoService.AddContatoAsync(contato);
+            bool success = await _contatoService.AddContatoAsync(contato);
 
-            // if (!success)
-            // {
-            //     return Conflict(new { Message = "Um contato com o Id informado já existe" });
-            // }
+            if (!success)
+            {
+                return Conflict(new { Message = "Um contato com o Id informado já existe" });
+            }
 
             _contatoCache.Set(await _contatoService.GetContatosAsync());
             return CreatedAtAction(nameof(GetContatos), new { id = contato.Id }, contato);
