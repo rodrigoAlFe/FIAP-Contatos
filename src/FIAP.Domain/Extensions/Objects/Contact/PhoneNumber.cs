@@ -10,7 +10,7 @@ public class PhoneNumber(string value)
 {
     [Required(ErrorMessage = "O número de telefone é obrigatório.")]
     [Display(Name = "Número de Telefone", Description = "Número de telefone.")]
-    [RegularExpression(@"^(9\d{8}|\d{8})$", ErrorMessage = "O número de telefone é inválido.")]
+    [RegularExpression(@"^([1-9][0-9]{3}-[0-9]{4}|9[0-9]{4}-[0-9]{4})$", ErrorMessage = "O número de telefone é inválido.")]
     public string Value { get; } = value;
 
     public static implicit operator string(PhoneNumber? phoneNumber) 
