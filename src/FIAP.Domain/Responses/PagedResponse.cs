@@ -27,6 +27,8 @@ namespace FIAP.Domain.Responses;
 
     public int TotalPages
         => (int)Math.Ceiling(TotalCount / (double)PageSize);
+    
+    public string[] Messages { get; } = messages ?? [];
 
     [JsonIgnore] public int TotalCount { get; } = totalCount;
 }

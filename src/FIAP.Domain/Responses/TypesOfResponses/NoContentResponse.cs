@@ -5,8 +5,7 @@ namespace FIAP.Domain.Responses.TypesOfResponses;
 /// <param name="data">The data that was deleted.</param>
 /// <param name="messages">The response messages.</param>
 public class NoContentResponse<TData>
-( TData data
-    , string[]? messages = null)
+( TData data )
     : Response<TData>
         ([data], StatusConfiguration.NoContentStatusCode)
 {
