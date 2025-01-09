@@ -4,7 +4,6 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,14 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
+      <ProjectReference Include="..\FIAP.Application\FIAP.Application.csproj" />
       <ProjectReference Include="..\FIAP.CrossCutting\FIAP.CrossCutting.csproj" />
-      <ProjectReference Include="..\FIAP.Infrastructure\FIAP.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
