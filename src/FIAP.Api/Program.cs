@@ -1,5 +1,5 @@
-using FIAP.CrossCutting.Configuration;
-using Microsoft.AspNetCore.Builder;
+using FIAP.CrossCutting.MiddlewareConfig;
+using FIAP.CrossCutting.ServicesConfig;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,11 +13,8 @@ builder.Services
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+// Add middlewares
+app.ConfigureMiddleware(builder.Configuration, typeof(IApplicationMiddleware).Assembly);
 
 app.UseHttpsRedirection();
 

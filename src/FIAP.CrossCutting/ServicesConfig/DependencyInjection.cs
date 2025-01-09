@@ -2,7 +2,7 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FIAP.CrossCutting.Configuration;
+namespace FIAP.CrossCutting.ServicesConfig;
 
 public static class DependencyInjection
 {

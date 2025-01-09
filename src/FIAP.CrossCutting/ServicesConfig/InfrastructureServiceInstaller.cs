@@ -1,9 +1,9 @@
-using Microsoft.EntityFrameworkCore;
 using FIAP.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FIAP.CrossCutting.Configuration;
+namespace FIAP.CrossCutting.ServicesConfig;
 
 public class InfrastructureServiceInstaller : IServiceInstaller
 {

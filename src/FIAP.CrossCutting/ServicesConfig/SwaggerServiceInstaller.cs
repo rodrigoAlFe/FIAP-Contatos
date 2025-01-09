@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace FIAP.CrossCutting.Configuration;
+namespace FIAP.CrossCutting.ServicesConfig;
 
 public class SwaggerServiceInstaller : IServiceInstaller
 {
