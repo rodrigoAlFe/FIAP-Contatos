@@ -1,0 +1,20 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  fiap.api:
+    build:
+      context: "/Users/carlosfilho/RiderProjects/FIAP-Contatos"
+      dockerfile: "src/FIAP.Api/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net9.0/FIAP.Api.dll"
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "fiap.api:dev"
+    ports: []
+    volumes:
+    - "/Users/carlosfilho/RiderProjects/FIAP-Contatos/src/FIAP.Api:/app:rw"
+    - "/Users/carlosfilho/RiderProjects/FIAP-Contatos:/src:rw"
+    - "/Users/carlosfilho/.nuget/packages:/home/app/.nuget/packages"
+    working_dir: "/app"
