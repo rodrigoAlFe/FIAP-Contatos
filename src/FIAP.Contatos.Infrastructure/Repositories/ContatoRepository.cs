@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 namespace FIAP.Contatos.Infrastructure.Repositories
 {
 
-    public class ContatoRepository(ApplicationDbContext context)
+    public class ContatoRepository(ApplicationDbContext context) : IContatoRepository
     {
-        public async Task<List<Contato>?> GetAllAsync(int? ddd = null)
+        public async Task<List<Contato?>> GetAllAsync(int? ddd = null)
         {
             return await context.Contatos
                                  .Where(c => !ddd.HasValue || c.Ddd == ddd.Value)
