@@ -29,7 +29,7 @@ namespace FIAP.Domain.Requests.ModelRequests;
               , contact.Phone
               , contact.Ddd)
     {}
-
+    
     public static implicit operator ContactRequest(Models.Contact request)
         => new(request);
 

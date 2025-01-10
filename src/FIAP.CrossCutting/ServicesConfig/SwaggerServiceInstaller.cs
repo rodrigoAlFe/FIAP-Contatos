@@ -19,10 +19,13 @@ public class SwaggerServiceInstaller : IServiceInstaller
             });
             // Configuração para lidar com referências a tipos complexos
             c.UseAllOfToExtendReferenceSchemas();
+            c.UseInlineDefinitionsForEnums();
             c.SupportNonNullableReferenceTypes();
 
             // Resolve convenções de nomes que estejam configuradas pelo JSON
             c.UseOneOfForPolymorphism();
+            
+            c.CustomSchemaIds(type => type.FullName); // Registra os erros por schema único
         });
     }
 }
