@@ -1,4 +1,4 @@
-﻿using FIAP.Contatos.Services;
+﻿using FIAP.Contatos.Service.Services;
 
 namespace FIAP.Contatos.Configuration
 {

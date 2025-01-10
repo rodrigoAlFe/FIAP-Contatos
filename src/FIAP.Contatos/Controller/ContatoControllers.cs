@@ -1,6 +1,6 @@
 ﻿using FIAP.Contatos.Domain.Entities;
 using FIAP.Contatos.Infrastructure.Cache;
-using FIAP.Contatos.Services;
+using FIAP.Contatos.Service.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.Contatos.Controller

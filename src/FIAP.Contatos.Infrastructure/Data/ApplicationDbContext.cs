@@ -1,7 +1,5 @@
 ﻿using FIAP.Contatos.Domain.Entities;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace FIAP.Contatos.Infrastructure.Data
 {
@@ -14,7 +12,7 @@ namespace FIAP.Contatos.Infrastructure.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL(b => b.MigrationsAssembly("FIAP.Contatos"));
+            optionsBuilder.UseMySQL(b => b.MigrationsAssembly("FIAP.Contatos.Infrastructure"));
         }
 
     }

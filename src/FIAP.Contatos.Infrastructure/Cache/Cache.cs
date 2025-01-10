@@ -9,12 +9,12 @@ namespace FIAP.Contatos.Infrastructure.Cache
     {
         private const string CacheKey = "Contatos";
 
-        public async Task<List<Contato>>? Get()
+        public Task<List<Contato>?>? Get()
         {
-            return cache.TryGetValue(CacheKey, out List<Contato>? contatos) ? contatos : new List<Contato>();
+            return Task.FromResult(cache.TryGetValue(CacheKey, out List<Contato>? contatos) ? contatos : []);
         }
 
-        public void Set(List<Contato> contatos)
+        public void Set(List<Contato>? contatos)
         {
             var memoryOptions = new MemoryCacheEntryOptions
             {

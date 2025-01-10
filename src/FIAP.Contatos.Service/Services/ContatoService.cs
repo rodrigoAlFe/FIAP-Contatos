@@ -1,12 +1,12 @@
 ﻿using FIAP.Contatos.Domain.Entities;
 using FIAP.Contatos.Infrastructure.Repositories;
 
-namespace FIAP.Contatos.Services
+namespace FIAP.Contatos.Service.Services
 {
 
     public class ContatoService(ContatoRepository contatoRepository)
     {
-        public async Task<List<Contato>> GetContatosAsync(int? ddd = null)
+        public async Task<List<Contato>?> GetContatosAsync(int? ddd = null)
         {
             return await contatoRepository.GetAllAsync(ddd);
         }
