@@ -5,19 +5,13 @@ using Microsoft.Extensions.Caching.Memory;
 namespace FIAP.Contatos.Infrastructure.Cache
 {
 
-    public class ContatoCache
+    public class ContatoCache(IMemoryCache cache)
     {
-        private readonly IMemoryCache _cache;
         private const string CacheKey = "Contatos";
-
-        public ContatoCache(IMemoryCache cache)
-        {
-            _cache = cache;
-        }
 
         public async Task<List<Contato>>? Get()
         {
-            return _cache.TryGetValue(CacheKey, out List<Contato>? contatos) ? contatos : new List<Contato>();
+            return cache.TryGetValue(CacheKey, out List<Contato>? contatos) ? contatos : new List<Contato>();
         }
 
         public void Set(List<Contato> contatos)
@@ -27,7 +21,7 @@ namespace FIAP.Contatos.Infrastructure.Cache
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(150),
                 SlidingExpiration = TimeSpan.FromSeconds(60)
             };
-            _cache.Set(CacheKey, contatos, memoryOptions);
+            cache.Set(CacheKey, contatos, memoryOptions);
 
         }
     }

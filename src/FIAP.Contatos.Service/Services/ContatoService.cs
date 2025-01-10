@@ -4,33 +4,26 @@ using FIAP.Contatos.Infrastructure.Repositories;
 namespace FIAP.Contatos.Services
 {
 
-    public class ContatoService
+    public class ContatoService(ContatoRepository contatoRepository)
     {
-        private readonly ContatoRepository _contatoRepository;
-
-        public ContatoService(ContatoRepository contatoRepository)
-        {
-            _contatoRepository = contatoRepository;
-        }
-
         public async Task<List<Contato>> GetContatosAsync(int? ddd = null)
         {
-            return await _contatoRepository.GetAllAsync(ddd);
+            return await contatoRepository.GetAllAsync(ddd);
         }
 
         public async Task AddContatoAsync(Contato contato)
         {
-            await _contatoRepository.AddAsync(contato);
+            await contatoRepository.AddAsync(contato);
         }
 
         public async Task UpdateContatoAsync(Contato contato)
         {
-            await _contatoRepository.UpdateAsync(contato);
+            await contatoRepository.UpdateAsync(contato);
         }
 
         public async Task DeleteContatoAsync(int id)
         {
-            await _contatoRepository.DeleteAsync(id);
+            await contatoRepository.DeleteAsync(id);
         }
     }
 

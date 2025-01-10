@@ -8,21 +8,12 @@ namespace FIAP.Contatos.Controller
 
     [Route("api/[controller]")]
     [ApiController]
-    public class ContatosController : ControllerBase
+    public class ContatosController(ContatoService contatoService, ContatoCache contatoCache) : ControllerBase
     {
-        private readonly ContatoService _contatoService;
-        private readonly ContatoCache _contatoCache;
-
-        public ContatosController(ContatoService contatoService, ContatoCache contatoCache)
-        {
-            _contatoService = contatoService;
-            _contatoCache = contatoCache;
-        }
-
         [HttpGet]
         public async Task<ActionResult<List<Contato>>> GetContatos([FromQuery] int? ddd)
         {
-            List<Contato>? contatos = await _contatoCache.Get();
+            List<Contato>? contatos = await contatoCache.Get();
             if (contatos.Count > 0)
             {
                 if (ddd != null)
@@ -31,8 +22,8 @@ namespace FIAP.Contatos.Controller
                 return Ok(contatos);
             }
 
-            contatos = await _contatoService.GetContatosAsync(ddd);
-            _contatoCache.Set(contatos);
+            contatos = await contatoService.GetContatosAsync(ddd);
+            contatoCache.Set(contatos);
 
             return Ok(contatos);
         }
@@ -40,8 +31,8 @@ namespace FIAP.Contatos.Controller
         [HttpPost]
         public async Task<IActionResult> CreateContato([FromBody] Contato contato)
         {
-            await _contatoService.AddContatoAsync(contato);
-            _contatoCache.Set(await _contatoService.GetContatosAsync());
+            await contatoService.AddContatoAsync(contato);
+            contatoCache.Set(await contatoService.GetContatosAsync());
             return CreatedAtAction(nameof(GetContatos), new { id = contato.Id }, contato);
         }
 
@@ -51,16 +42,16 @@ namespace FIAP.Contatos.Controller
             if (id != contato.Id)
                 return BadRequest();
 
-            await _contatoService.UpdateContatoAsync(contato);
-            _contatoCache.Set(await _contatoService.GetContatosAsync());
+            await contatoService.UpdateContatoAsync(contato);
+            contatoCache.Set(await contatoService.GetContatosAsync());
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContato(int id)
         {
-            await _contatoService.DeleteContatoAsync(id);
-            _contatoCache.Set(await _contatoService.GetContatosAsync());
+            await contatoService.DeleteContatoAsync(id);
+            contatoCache.Set(await contatoService.GetContatosAsync());
             return NoContent();
         }
     }
