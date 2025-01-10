@@ -17,6 +17,12 @@ public class SwaggerServiceInstaller : IServiceInstaller
                 Version = "v1",
                 Description = "API para gerenciar os recursos do FIAP."
             });
+            // Configuração para lidar com referências a tipos complexos
+            c.UseAllOfToExtendReferenceSchemas();
+            c.SupportNonNullableReferenceTypes();
+
+            // Resolve convenções de nomes que estejam configuradas pelo JSON
+            c.UseOneOfForPolymorphism();
         });
     }
 }

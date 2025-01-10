@@ -1,3 +1,4 @@
+using FIAP.Api.Endpoints;
 using FIAP.CrossCutting.MiddlewareConfig;
 using FIAP.CrossCutting.ServicesConfig;
 
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 // Add Services
+builder.Services.AddEndpointsApiExplorer();
 builder.Services
     .InstallServices(builder.Configuration, typeof(IServiceInstaller).Assembly);
 
@@ -17,5 +19,7 @@ var app = builder.Build();
 app.ConfigureMiddleware(builder.Configuration, typeof(IApplicationMiddleware).Assembly);
 
 app.UseHttpsRedirection();
+
+app.MapContactEndpoints();
 
 app.Run();
