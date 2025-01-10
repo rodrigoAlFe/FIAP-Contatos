@@ -43,7 +43,7 @@ public class ContatosRepositoryTests
         };
 
         _repositoryMock
-            .Setup(repo => repo.GetAllAsync(ddd))
+            .Setup(repo => repo.GetAllAsync(ddd))!
             .ReturnsAsync(contatosMock.Where(c => c.Ddd == ddd).ToList());
 
         // Act
@@ -73,7 +73,7 @@ public class ContatosRepositoryTests
     public async Task GetByIdAsync_DeveRetornarNuloQuandoNaoExistir()
     {
         // Arrange
-        _repositoryMock.Setup(repo => repo.GetByIdAsync(99)).ReturnsAsync((Contato)null);
+        _repositoryMock.Setup(repo => repo.GetByIdAsync(99)).ReturnsAsync((Contato)null!);
 
         // Act
         var contato = await _repositoryMock.Object.GetByIdAsync(99);
