@@ -1,16 +1,19 @@
 # FIAP-Contatos
 Projeto Pós Tech Arquitetura de Sistemas .NET - FIAP
 
-## Pacotes Instalados
-- MySql.Data 9.1.0
-- MySql.EntityFrameworkCore 8.0.8
-- Pomelo.EntityFrameworkCore.MySql 8.0.2
-- xUnit 2.9.2
-- Moq 4.20.72
-- Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore 8.0.8
-- Microsoft.AspNetCore.Identity.EntityFrameworkCore 8.0.8
-- Microsoft.AspNetCore.OpenApi 8.0.11
-- Microsoft.EntityFrameworkCore 8.0.8
-- Microsoft.EntityFrameworkCore.Tools 8.0.8
-- Microsoft.Extensions.Caching.Abstractions 9.0.0
-- Microsoft.Extensions.Caching.Memory 8.0.1
+## Organização da solução
+
+1. **FIAP.Api**:
+    - Camada de apresentação da API, onde as requisições tratadas passam os dados para a aplicação.
+
+2. **FIAP.Application**:
+    - Camada de lógica de aplicação (interage com FIAP.Domain para aplicar as regras de negócio).
+
+3. **FIAP.Domain**:
+    - Contém as regras de domínio principal e entidades.
+
+4. **FIAP.Infrastructure**:
+    - Implementação concreta de conexões externas, como banco de dados ou APIs externas.
+
+5. **FIAP.CrossCutting**:
+    - Gerenciar preocupações transversais, como logs, autenticação e validação.

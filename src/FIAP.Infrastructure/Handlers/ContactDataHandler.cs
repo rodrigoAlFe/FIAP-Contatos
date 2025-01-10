@@ -24,7 +24,7 @@ public class ContactDataHandler(MainDbContext context) : IContactHandler
         await _context.SaveChangesAsync();
         
         // return response
-        return new Response<ContactResponse>([savedContact.Entity]);
+        return new CreatedContentResponse<ContactResponse>(savedContact.Entity);
     }
 
     public async Task<Response<ContactResponse>> UpdateAsync(ContactRequest request)

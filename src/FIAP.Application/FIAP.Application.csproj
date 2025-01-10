@@ -10,4 +10,10 @@
       <ProjectReference Include="..\FIAP.Domain\FIAP.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="FIAP.Infrastructure">
+        <HintPath>..\..\test\Infrastructure.Test\bin\Debug\net9.0\FIAP.Infrastructure.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>
