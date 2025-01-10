@@ -8,7 +8,7 @@ namespace FIAP.Contatos.Infrastructure.Data
         // Construtor que recebe as opções do DbContext
 
         // Definição do DbSet que representa a tabela "Contatos" no banco de dados
-        public DbSet<Contato> Contatos { get; set; }
+        public DbSet<Contato?> Contatos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

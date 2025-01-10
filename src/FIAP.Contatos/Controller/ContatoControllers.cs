@@ -13,14 +13,9 @@ namespace FIAP.Contatos.Controller
         [HttpGet]
         public async Task<ActionResult<List<Contato>>> GetContatos([FromQuery] int? ddd)
         {
-            List<Contato>? contatos = await contatoCache.Get();
-            if (contatos.Count > 0)
-            {
-                if (ddd != null)
-                    return Ok(contatos.Where(x => x.Ddd == ddd));
-                
-                return Ok(contatos);
-            }
+            var contatos = await contatoCache.Get()!;
+            if (contatos is { Count: > 0 })
+                return Ok(ddd != null ? contatos.Where(x => x.Ddd == ddd) : contatos);
 
             contatos = await contatoService.GetContatosAsync(ddd);
             contatoCache.Set(contatos);
@@ -29,15 +24,16 @@ namespace FIAP.Contatos.Controller
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateContato([FromBody] Contato contato)
+        public async Task<IActionResult> CreateContato([FromBody] Contato? contato)
         {
             await contatoService.AddContatoAsync(contato);
             contatoCache.Set(await contatoService.GetContatosAsync());
-            return CreatedAtAction(nameof(GetContatos), new { id = contato.Id }, contato);
+            if (contato != null) return CreatedAtAction(nameof(GetContatos), new { id = contato.Id }, contato);
+            return NoContent();
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateContato(int id, [FromBody] Contato contato)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateContato(int id, [FromBody] Contato? contato)
         {
             if (id != contato.Id)
                 return BadRequest();
@@ -47,7 +43,7 @@ namespace FIAP.Contatos.Controller
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteContato(int id)
         {
             await contatoService.DeleteContatoAsync(id);

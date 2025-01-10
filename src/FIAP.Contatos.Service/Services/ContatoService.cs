@@ -11,12 +11,12 @@ namespace FIAP.Contatos.Service.Services
             return await contatoRepository.GetAllAsync(ddd);
         }
 
-        public async Task AddContatoAsync(Contato contato)
+        public async Task AddContatoAsync(Contato? contato)
         {
             await contatoRepository.AddAsync(contato);
         }
 
-        public async Task UpdateContatoAsync(Contato contato)
+        public async Task UpdateContatoAsync(Contato? contato)
         {
             await contatoRepository.UpdateAsync(contato);
         }

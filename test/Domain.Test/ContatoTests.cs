@@ -30,7 +30,7 @@ public class ContatoTests
     [InlineData("João Silva", "abc1234", "joao@exemplo.com", 11, "Telefone no formato inválido.")]
     [InlineData("João Silva", "1234-5678", "email_invalido", 11, "Endereço de e-mail inválido.")]
     [InlineData("João Silva", "1234-5678", "joao@exemplo.com", 123, "DDD no formato inválido.")]
-    public void Contato_DeveSerInvalido_ComDadosIncorretos(string nome, string telefone, string email, int ddd, string mensagemEsperada)
+    public void Contato_DeveSerInvalido_ComDadosIncorretos(string? nome, string telefone, string email, int ddd, string mensagemEsperada)
     {
         // Arrange
         var contato = new Contato
@@ -51,7 +51,7 @@ public class ContatoTests
     }
 
     // Método auxiliar para realizar validações de modelo
-    private IList<ValidationResult> ValidateModel(object model)
+    private static IList<ValidationResult> ValidateModel(object model)
     {
         var validationResults = new List<ValidationResult>();
         var validationContext = new ValidationContext(model, serviceProvider: null, items: null);

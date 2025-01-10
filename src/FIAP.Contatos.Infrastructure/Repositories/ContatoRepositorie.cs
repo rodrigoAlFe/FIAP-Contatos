@@ -14,18 +14,18 @@ namespace FIAP.Contatos.Infrastructure.Repositories
                                  .ToListAsync();
         }
 
-        public async Task<Contato> GetByIdAsync(int id)
+        public async Task<Contato?> GetByIdAsync(int id)
         {
             return await context.Contatos.FindAsync(id);
         }
 
-        public async Task AddAsync(Contato contato)
+        public async Task AddAsync(Contato? contato)
         {
             await context.Contatos.AddAsync(contato);
             await context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Contato contato)
+        public async Task UpdateAsync(Contato? contato)
         {
             context.Contatos.Update(contato);
             await context.SaveChangesAsync();
