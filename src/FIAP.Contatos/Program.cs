@@ -1,7 +1,7 @@
 using FIAP.Contatos.Configuration;
 using FIAP.Contatos.Infrastructure.Cache;
 using FIAP.Contatos.Infrastructure.Data;
-using FIAP.Contatos.Services;
+using FIAP.Contatos.Service.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

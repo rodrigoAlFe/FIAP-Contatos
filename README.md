@@ -1,6 +1,27 @@
 # FIAP-Contatos
 Projeto Pós Tech Arquitetura de Sistemas .NET - FIAP
 
+## Como Rodar o Database MySQL
+
+Use o docker
+
+
+```shell
+docker run --name mysql-fiap -e MYSQL_ROOT_PASSWORD=admin -p 3306:3306 -d mysql:latest
+```
+
+Caso queira criar uma migrations rode:
+```shell
+cd src/
+dotnet ef migrations add V1 --project FIAP.Contatos.Infrastructure/FIAP.Contatos.Infrastructure.csproj --startup-project FIAP.Contatos/FIAP.Contatos.csproj --context FIAP.Contatos.Infrastructure.Data.ApplicationDbContext --verbose
+```
+Para aplicar as alterações no banco de dados, (ainda dentro do diretório src)
+```shell
+cd src/
+dotnet ef database update V1  --project FIAP.Contatos.Infrastructure/FIAP.Contatos.Infrastructure.csproj --startup-project FIAP.Contatos/FIAP.Contatos.csproj --context FIAP.Contatos.Infrastructure.Data.ApplicationDbContext --verbose
+```
+
+
 ## Pacotes Instalados
 - MySql.Data 9.1.0
 - MySql.EntityFrameworkCore 8.0.8

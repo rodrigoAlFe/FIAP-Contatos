@@ -3,13 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.Contatos", "FIAP.Contatos\FIAP.Contatos.csproj", "{341E7EF0-3152-42DE-9B1C-B62C503E8530}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.Contatos", "src\FIAP.Contatos\FIAP.Contatos.csproj", "{341E7EF0-3152-42DE-9B1C-B62C503E8530}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.Contatos.Domain", "FIAP.Contatos.Domain\FIAP.Contatos.Domain.csproj", "{4425C7F6-8763-45AE-B838-4BB92448AB5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.Contatos.Domain", "src\FIAP.Contatos.Domain\FIAP.Contatos.Domain.csproj", "{4425C7F6-8763-45AE-B838-4BB92448AB5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.Contatos.Infrastructure", "FIAP.Contatos.Infrastructure\FIAP.Contatos.Infrastructure.csproj", "{C10D0434-5710-4B95-A56D-BA713B37A9D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.Contatos.Infrastructure", "src\FIAP.Contatos.Infrastructure\FIAP.Contatos.Infrastructure.csproj", "{C10D0434-5710-4B95-A56D-BA713B37A9D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.Contatos.Service", "FIAP.Contatos.Service\FIAP.Contatos.Service.csproj", "{4ABBF832-8693-4439-A51D-3B30CEC4A5CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.Contatos.Service", "src\FIAP.Contatos.Service\FIAP.Contatos.Service.csproj", "{4ABBF832-8693-4439-A51D-3B30CEC4A5CB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{599B7C9C-4EC1-4752-BEE1-9E27D0C5F166}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1A20EEB2-578F-4CE3-ABDC-683B23382E2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Test", "test\Domain.Test\Domain.Test.csproj", "{0C08965B-63C2-44E0-AB04-16ED8EF9D15F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Test", "test\Infrastructure.Test\Infrastructure.Test.csproj", "{D75B2992-5CB3-4272-A7AA-5B4BD66FE951}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,8 +41,24 @@ Global
 		{4ABBF832-8693-4439-A51D-3B30CEC4A5CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4ABBF832-8693-4439-A51D-3B30CEC4A5CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4ABBF832-8693-4439-A51D-3B30CEC4A5CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C08965B-63C2-44E0-AB04-16ED8EF9D15F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C08965B-63C2-44E0-AB04-16ED8EF9D15F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C08965B-63C2-44E0-AB04-16ED8EF9D15F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C08965B-63C2-44E0-AB04-16ED8EF9D15F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D75B2992-5CB3-4272-A7AA-5B4BD66FE951}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D75B2992-5CB3-4272-A7AA-5B4BD66FE951}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D75B2992-5CB3-4272-A7AA-5B4BD66FE951}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D75B2992-5CB3-4272-A7AA-5B4BD66FE951}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{341E7EF0-3152-42DE-9B1C-B62C503E8530} = {599B7C9C-4EC1-4752-BEE1-9E27D0C5F166}
+		{4425C7F6-8763-45AE-B838-4BB92448AB5C} = {599B7C9C-4EC1-4752-BEE1-9E27D0C5F166}
+		{C10D0434-5710-4B95-A56D-BA713B37A9D7} = {599B7C9C-4EC1-4752-BEE1-9E27D0C5F166}
+		{4ABBF832-8693-4439-A51D-3B30CEC4A5CB} = {599B7C9C-4EC1-4752-BEE1-9E27D0C5F166}
+		{0C08965B-63C2-44E0-AB04-16ED8EF9D15F} = {1A20EEB2-578F-4CE3-ABDC-683B23382E2E}
+		{D75B2992-5CB3-4272-A7AA-5B4BD66FE951} = {1A20EEB2-578F-4CE3-ABDC-683B23382E2E}
 	EndGlobalSection
 EndGlobal
