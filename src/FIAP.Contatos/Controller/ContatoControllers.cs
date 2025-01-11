@@ -14,11 +14,11 @@ namespace FIAP.Contatos.Controller
         public async Task<ActionResult<List<Contato>>> GetContatos([FromQuery] int? ddd)
         {
             var contatos = await contatoCache.Get()!;
+
             if (contatos is { Count: > 0 })
                 return Ok(ddd != null ? contatos.Where(x => x.Ddd == ddd) : contatos);
 
-            contatos = await contatoService.GetContatosAsync(ddd);
-            contatoCache.Set(contatos);
+            contatoCache.Set(await contatoService.GetAllByDDDAsync(ddd));
 
             return Ok(contatos);
         }
@@ -27,7 +27,8 @@ namespace FIAP.Contatos.Controller
         public async Task<IActionResult> CreateContato([FromBody] Contato? contato)
         {
             await contatoService.AddContatoAsync(contato);
-            contatoCache.Set(await contatoService.GetContatosAsync());
+            contatoCache.Set(await contatoService.GetAllContatosAsync());
+
             if (contato != null) return CreatedAtAction(nameof(GetContatos), new { id = contato.Id }, contato);
             return NoContent();
         }
@@ -38,17 +39,32 @@ namespace FIAP.Contatos.Controller
             if (id != contato.Id)
                 return BadRequest();
 
-            await contatoService.UpdateContatoAsync(contato);
-            contatoCache.Set(await contatoService.GetContatosAsync());
-            return NoContent();
+            try
+            {
+                await contatoService.UpdateContatoAsync(contato);
+                contatoCache.Set(await contatoService.GetAllContatosAsync());
+                return NoContent();
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteContato(int id)
         {
-            await contatoService.DeleteContatoAsync(id);
-            contatoCache.Set(await contatoService.GetContatosAsync());
-            return NoContent();
+            try
+            {
+                await contatoService.DeleteContatoAsync(id);
+                contatoCache.Set(await contatoService.GetAllContatosAsync());
+                return NoContent();
+
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }            
         }
     }
 }

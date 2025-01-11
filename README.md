@@ -21,17 +21,40 @@ cd src/
 dotnet ef database update V1  --project FIAP.Contatos.Infrastructure/FIAP.Contatos.Infrastructure.csproj --startup-project FIAP.Contatos/FIAP.Contatos.csproj --context FIAP.Contatos.Infrastructure.Data.ApplicationDbContext --verbose
 ```
 
+### Estrutura de Projetos na Solução
+A solução contém os seguintes projetos estruturados em pastas principais (`src` e `test`). 
 
-## Pacotes Instalados
-- MySql.Data 9.1.0
-- MySql.EntityFrameworkCore 8.0.8
-- Pomelo.EntityFrameworkCore.MySql 8.0.2
-- xUnit 2.9.2
-- Moq 4.20.72
-- Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore 8.0.8
-- Microsoft.AspNetCore.Identity.EntityFrameworkCore 8.0.8
-- Microsoft.AspNetCore.OpenApi 8.0.11
-- Microsoft.EntityFrameworkCore 8.0.8
-- Microsoft.EntityFrameworkCore.Tools 8.0.8
-- Microsoft.Extensions.Caching.Abstractions 9.0.0
-- Microsoft.Extensions.Caching.Memory 8.0.1
+Estes refletem uma arquitetura dividida em camadas e componentes principais:
+#### **1. Projetos Principais (`src`)**
+Os projetos localizados na pasta `src` formam o núcleo funcional da aplicação. Eles incluem:
+- **FIAP.Contatos**
+  Representa o projeto principal da solução, representa a camada de apresentação, uma API Rest construída com ASP.NET Core.
+- **FIAP.Contatos.Domain**
+  Contém as entidades de domínio e os contratos (interfaces). Essa camada é responsável por representar as regras e a lógica de negócio essencial da aplicação.
+- **FIAP.Contatos.Infrastructure**
+  Inclui a infraestrutura necessária, como acesso ao banco de dados (através do Entity Framework Core), implementações de repositórios e integrações com outros serviços.
+- **FIAP.Contatos.Service**
+  O projeto que implementa os serviços de aplicação. Ele contém a lógica intermediária entre o domínio e a apresentação. Pode incluir serviços para gerenciar operações mais complexas.
+
+#### **2. Projetos de Testes (`test`)**
+Os projetos na pasta `test` são usados para garantir a qualidade do código por meio de testes automatizados:
+- **Domain.Test**
+  Contém testes unitários que verificam as regras de negócio na camada de domínio.
+- **Infrastructure.Test**
+  Contém testes relacionados à infraestrutura, como validação de repositórios ou interações com o banco de dados.
+
+#### **3. Pastas Virtuais**
+Há duas pastas virtuais que organizam os projetos dentro da solução:
+- **src**
+  Agrupa todos os projetos de implementação.
+- **test**
+  Agrupa todos os projetos de teste.
+- **Estrutura Aninhada**
+  Os projetos dentro da pasta `src` e `test` estão estruturados hierarquicamente no arquivo de solução para facilitar o gerenciamento.
+
+### Observações sobre Ferramentas
+Esta solução utiliza ferramentas modernas como:
+- **EF Core para acesso a dados**.
+- **MySQL com suporte a migrations**.
+- **xUnit e Moq para testes unitários**.
+- **Dependências de ASP.NET Core**, como ASP.NET Identity e OpenAPI, oferecem suporte para autenticação, documentação de API (Swagger) e outros serviços web.

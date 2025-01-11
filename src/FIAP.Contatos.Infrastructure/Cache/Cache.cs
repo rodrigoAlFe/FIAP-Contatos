@@ -14,7 +14,7 @@ namespace FIAP.Contatos.Infrastructure.Cache
             return Task.FromResult(cache.TryGetValue(CacheKey, out List<Contato>? contatos) ? contatos : []);
         }
 
-        public void Set(List<Contato>? contatos)
+        public void Set(List<Contato?>? contatos)
         {
             var memoryOptions = new MemoryCacheEntryOptions
             {

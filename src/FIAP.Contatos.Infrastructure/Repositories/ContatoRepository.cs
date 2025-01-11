@@ -7,11 +7,12 @@ namespace FIAP.Contatos.Infrastructure.Repositories
 
     public class ContatoRepository(ApplicationDbContext context) : IContatoRepository
     {
-        public async Task<List<Contato?>> GetAllAsync(int? ddd = null)
+        public async Task<List<Contato?>> GetAllAsync()
+            => await context.Contatos.ToListAsync();
+
+        public async Task<List<Contato?>> GetAllByDDDAsync(int? ddd)
         {
-            return await context.Contatos
-                                 .Where(c => !ddd.HasValue || c.Ddd == ddd.Value)
-                                 .ToListAsync();
+            return await context.Contatos.Where(contatos => ddd.HasValue || (contatos != null && contatos.Ddd == ddd)).ToListAsync();
         }
 
         public async Task<Contato?> GetByIdAsync(int id)
@@ -27,6 +28,16 @@ namespace FIAP.Contatos.Infrastructure.Repositories
 
         public async Task UpdateAsync(Contato? contato)
         {
+            if (await GetByIdAsync(contato.Id) == null)
+                throw new Exception("Id Não existe!");
+
+            var trackedEntity = context.ChangeTracker.Entries<Contato>().FirstOrDefault(e => e.Entity.Id == contato.Id);
+
+            if (trackedEntity != null)
+            {
+                trackedEntity.State = EntityState.Detached;
+            }
+
             context.Contatos.Update(contato);
             await context.SaveChangesAsync();
         }
@@ -34,11 +45,12 @@ namespace FIAP.Contatos.Infrastructure.Repositories
         public async Task DeleteAsync(int id)
         {
             var contato = await GetByIdAsync(id);
-            if (contato != null)
-            {
-                context.Contatos.Remove(contato);
-                await context.SaveChangesAsync();
-            }
+
+            if (contato == null)
+                throw new Exception("Id não existe!");
+
+            context.Contatos.Remove(contato);
+            await context.SaveChangesAsync();
         }
     }
 
