@@ -1,0 +1,33 @@
+name: .NET Build and Test (ci-pipeline)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restaura as dependencias
+        run: dotnet restore
+
+      - name: Builda a aplicação
+        run: dotnet build src/FIAP.Contatos/FIAP.Contatos.csproj --no-restore --configuration Release
+
+      - name: Executa os testes unitários
+        run: dotnet test test/Domain.Test/Domain.Test.csproj --configuration Release --verbosity normal
+
+      - name: Executa os testes de integracao
+        run: dotnet test test/Infrastructure.Test/Infrastructure.Test.csproj --configuration Release --verbosity normal
