@@ -19,7 +19,7 @@ public class ContatosRepositoryTests
             new Contato { Id = 1, Nome = "João Silva", Telefone = "1234-5678", Email = "joao@teste.com", Ddd = 11 },
             new Contato { Id = 2, Nome = "Maria Oliveira", Telefone = "9876-5432", Email = "maria@teste.com", Ddd = 21 }
         };
-        _repositoryMock.Setup(repo => repo.GetAllAsync(null))!.ReturnsAsync(contatosMock);
+        _repositoryMock.Setup(repo => repo.GetAllAsync())!.ReturnsAsync(contatosMock);
 
         // Act
         var contatos = await _repositoryMock.Object.GetAllAsync();
@@ -43,11 +43,11 @@ public class ContatosRepositoryTests
         };
 
         _repositoryMock
-            .Setup(repo => repo.GetAllAsync(ddd))!
+            .Setup(repo => repo.GetAllByDDDAsync(ddd))!
             .ReturnsAsync(contatosMock.Where(c => c.Ddd == ddd).ToList());
 
         // Act
-        var contatos = await _repositoryMock.Object.GetAllAsync(ddd);
+        var contatos = await _repositoryMock.Object.GetAllByDDDAsync(ddd);
 
         // Assert
         Assert.NotNull(contatos);
