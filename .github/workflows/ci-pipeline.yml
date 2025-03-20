@@ -2,9 +2,9 @@ name: .NET Build and Test (ci-pipeline)
 
 on:
   push:
-    branches: [ "Develop" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "Develop" ]
+    branches: [ "develop" ]
 
 jobs:
   build:
