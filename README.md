@@ -33,6 +33,7 @@ Esse script irá aplicar as migrations usando o Entity Framework Core e preparar
 - Após rodar o comando `docker-compose up`, o projeto estará disponível na porta definida no arquivo `docker-compose.yml`. Geralmente, o endereço será algo como:
 ``` 
   http://localhost:8080/swagger
+  http://localhost:9090/metrics
 ```
 - O script `./migrations.sh` garante que o banco de dados seja configurado corretamente com base no código atual.
 - Sempre que houver mudanças em entidades ou na estrutura de banco de dados, você poderá criar novas migrations e aplicar pelo mesmo processo.
