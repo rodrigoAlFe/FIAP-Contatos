@@ -1,25 +1,42 @@
 # FIAP-Contatos
 Projeto Pós Tech Arquitetura de Sistemas .NET - FIAP
 
-## Como Rodar o Database MySQL
-
-Use o docker
-
-
-```shell
-docker run --name mysql-fiap -e MYSQL_ROOT_PASSWORD=admin -p 3306:3306 -d mysql:latest
+## Passo a Passo: Como Rodar o Projeto
+1. Certifique-se de que tem o **Docker** e o **Docker Compose** instalados na sua máquina. Isso será necessário para subir todas as dependências do projeto.
+2. Abra um terminal na pasta raiz do projeto, onde se encontra o arquivo `docker-compose.yml`.
+3. Execute o seguinte comando para iniciar a aplicação e todas as dependências:
+``` bash
+   docker-compose up
 ```
+Esse comando irá construir todas as imagens e iniciar os containers necessários para o projeto, como o banco de dados MySQL e a aplicação API.
 
-Caso queira criar uma migrations rode:
-```shell
-cd src/
-dotnet ef migrations add V1 --project FIAP.Contatos.Infrastructure/FIAP.Contatos.Infrastructure.csproj --startup-project FIAP.Contatos/FIAP.Contatos.csproj --context FIAP.Contatos.Infrastructure.Data.ApplicationDbContext --verbose
+> **Dica:** Para rodar os containers em segundo plano (background), utilize o comando `docker-compose up -d`.
+>
+
+## Executar Migrations do Banco de Dados
+Se for a primeira execução será necessário executar as migrations para preparar o banco de dados com as tabelas e configurações iniciais, siga os passos abaixo:
+1. Abra um terminal dentro do container da aplicação `fiap.contatos_api`. Para entrar no container, você pode usar um comando similar a este:
+``` bash
+   docker exec -it fiap.contatos_api bash
 ```
-Para aplicar as alterações no banco de dados, (ainda dentro do diretório src)
-```shell
-cd src/
-dotnet ef database update V1  --project FIAP.Contatos.Infrastructure/FIAP.Contatos.Infrastructure.csproj --startup-project FIAP.Contatos/FIAP.Contatos.csproj --context FIAP.Contatos.Infrastructure.Data.ApplicationDbContext --verbose
+Isso abrirá um shell bash dentro do container.
+1. Navegue até a pasta `src` da aplicação:
+``` bash
+   cd /src
 ```
+1. Execute o script responsável pelas migrations:
+``` bash
+   ./migrations.sh
+```
+Esse script irá aplicar as migrations usando o Entity Framework Core e preparar o banco de dados.
+## Observações
+- Após rodar o comando `docker-compose up`, o projeto estará disponível na porta definida no arquivo `docker-compose.yml`. Geralmente, o endereço será algo como:
+``` 
+  http://localhost:8080/swagger
+```
+- O script `./migrations.sh` garante que o banco de dados seja configurado corretamente com base no código atual.
+- Sempre que houver mudanças em entidades ou na estrutura de banco de dados, você poderá criar novas migrations e aplicar pelo mesmo processo.
+
 
 ### Estrutura de Projetos na Solução
 A solução contém os seguintes projetos estruturados em pastas principais (`src` e `test`).
