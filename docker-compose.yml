@@ -38,6 +38,20 @@ services:
     networks:
       - app_network
 
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000" # Porta padrão do Grafana
+    networks:
+      - app_network # Deve estar na mesma rede para acessar o Prometheus pelo nome
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin # Usuário padrão do Grafana
+      - GF_SECURITY_ADMIN_PASSWORD=admin # Senha padrão do Grafana
+    volumes:
+      - grafana_data:/var/lib/grafana # Persistência de dados
+
 
 networks:
   app_network:
@@ -45,3 +59,4 @@ networks:
 
 volumes:
   mysql_data:
+  grafana_data:
