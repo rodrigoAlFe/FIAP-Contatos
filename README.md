@@ -22,7 +22,7 @@ dotnet ef database update V1  --project FIAP.Contatos.Infrastructure/FIAP.Contat
 ```
 
 ### Estrutura de Projetos na Solução
-A solução contém os seguintes projetos estruturados em pastas principais (`src` e `test`). 
+A solução contém os seguintes projetos estruturados em pastas principais (`src` e `test`).
 
 Estes refletem uma arquitetura dividida em camadas e componentes principais:
 #### **1. Projetos Principais (`src`)**
