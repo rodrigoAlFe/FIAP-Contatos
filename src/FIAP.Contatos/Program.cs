@@ -37,8 +37,6 @@ app.UseRouting();
 // Rota para métricas Prometheus (adicionada antes de HTTPS Redirection)
 app.UseHttpMetrics();
 
-// CI
-
 // Configura os endpoints
 app.UseEndpoints(endpoints =>
 {
