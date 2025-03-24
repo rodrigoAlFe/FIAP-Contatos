@@ -11,5 +11,6 @@ RUN dotnet build -c Debug -o /out # Apenas build em vez de publish
 FROM mcr.microsoft.com/dotnet/sdk:9.0
 WORKDIR /app
 COPY --from=build /out .
+COPY . /src
 EXPOSE 8080
 CMD ["dotnet", "FIAP.Contatos.dll"]
