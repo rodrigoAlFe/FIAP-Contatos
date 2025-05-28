@@ -7,16 +7,10 @@ namespace cadastro_api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ContatosController : ControllerBase
+public class ContatosController(IHttpClientFactory httpClientFactory, ILogger<ContatosController> logger) : ControllerBase
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILogger<ContatosController> _logger;
-
-    public ContatosController(IHttpClientFactory httpClientFactory, ILogger<ContatosController> logger)
-    {
-        _httpClientFactory = httpClientFactory;
-        _logger = logger;
-    }
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+    private readonly ILogger<ContatosController> _logger = logger;
 
     // POST api/Contatos
     [HttpPost]

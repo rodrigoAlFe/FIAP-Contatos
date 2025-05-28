@@ -5,9 +5,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddHttpClient("cadastro-api", client =>
+builder.Services.AddHttpClient("PersistenciaApiClient", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5083");
+    client.BaseAddress = new Uri(builder.Configuration["PersistenciaApiUrl"] ?? "http://localhost:5148");
 })
     .AddPolicyHandler(GetRetryPolicy())
     .AddPolicyHandler(GetCircuitBreakerPolicy());
