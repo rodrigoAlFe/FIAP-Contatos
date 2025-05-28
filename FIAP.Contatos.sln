@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "persistencia-api", "src\persistencia-api\persistencia-api.csproj", "{FDDA52E8-9C80-4FE0-A847-E1543D2A0607}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cadastro-api", "src\cadastro-api\cadastro-api.csproj", "{50F5FC51-8D13-407C-B49A-6D044347E8F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,12 +30,17 @@ Global
 		{FDDA52E8-9C80-4FE0-A847-E1543D2A0607}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDDA52E8-9C80-4FE0-A847-E1543D2A0607}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDDA52E8-9C80-4FE0-A847-E1543D2A0607}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50F5FC51-8D13-407C-B49A-6D044347E8F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50F5FC51-8D13-407C-B49A-6D044347E8F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50F5FC51-8D13-407C-B49A-6D044347E8F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50F5FC51-8D13-407C-B49A-6D044347E8F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FDDA52E8-9C80-4FE0-A847-E1543D2A0607} = {599B7C9C-4EC1-4752-BEE1-9E27D0C5F166}
+		{50F5FC51-8D13-407C-B49A-6D044347E8F1} = {599B7C9C-4EC1-4752-BEE1-9E27D0C5F166}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {502F8311-2ED5-4E5C-BCA3-B44833680FE6}
