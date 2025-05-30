@@ -1,32 +1,57 @@
+docker-compose.yml
 version: '3.8'
 services:
-  db:
-    image: mysql:8.0
-    container_name: fiap.contatos_db
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: fiap.sqlserver
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: admin
-      MYSQL_DATABASE: fiap
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=1q2w3e4r@#$
+      - MSSQL_PID=Express
     ports:
-      - "3306:3306"
+      - "1433:1433"
     networks:
       - app_network
     volumes:
-      - mysql_data:/var/lib/mysql
+      - sqlserver_data:/var/opt/mssql
 
-  api:
-    build: .
-    container_name: fiap.contatos_api
+  persistencia-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: persistencia-api
+    container_name: fiap.persistencia_api
     depends_on:
-      - db
+      - sqlserver
     environment:
-      - ConnectionStrings__DefaultConnection=Server=db;Database=fiap;User=root;Password=admin;
+      - ConnectionStrings__DefaultConnection=Server=192.168.64.1,1433;Database=Contato-FIAP;User ID=sa;Password=1q2w3e4r@#$;Trusted_Connection=False; TrustServerCertificate=True;
     ports:
-      - "8080:8080"
+      - "5148:5148"
     networks:
       - app_network
-    command: [ "dotnet", "FIAP.Contatos.dll" ]
-    
+    command: [ "dotnet", "persistencia-api.dll" ]
+    volumes:
+      - persistencia_data:/app
+
+  cadastro-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: cadastro-api
+    container_name: fiap.cadastro_api
+    depends_on:
+      - persistencia-api
+    environment:
+      - PersistenciaApiUrl=http://fiap.persistencia_api:5148
+    ports:
+      - "5083:5083"
+    networks:
+      - app_network
+    command: [ "dotnet", "cadastro-api.dll" ]
+    volumes:
+      - cadastro_data:/app
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -43,20 +68,21 @@ services:
     container_name: grafana
     restart: always
     ports:
-      - "3000:3000" # Porta padrão do Grafana
+      - "3000:3000"
     networks:
-      - app_network # Deve estar na mesma rede para acessar o Prometheus pelo nome
+      - app_network
     environment:
-      - GF_SECURITY_ADMIN_USER=admin # Usuário padrão do Grafana
-      - GF_SECURITY_ADMIN_PASSWORD=admin # Senha padrão do Grafana
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - grafana_data:/var/lib/grafana # Persistência de dados
-
+      - grafana_data:/var/lib/grafana
 
 networks:
   app_network:
     driver: bridge
 
 volumes:
-  mysql_data:
+  sqlserver_data:
+  persistencia_data:
+  cadastro_data:
   grafana_data:
