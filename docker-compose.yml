@@ -24,9 +24,10 @@ services:
     depends_on:
       - sqlserver
     environment:
+      - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__DefaultConnection=Server=fiap.sqlserver,1433;Database=Contato-FIAP;User ID=sa;Password=1q2w3e4r@#$;Trusted_Connection=False; TrustServerCertificate=True;
     ports:
-      - "5148:5148"
+      - "8080:8080"
     networks:
       - app_network
     command: [ "dotnet", "persistencia-api.dll" ]
@@ -42,9 +43,10 @@ services:
     depends_on:
       - persistencia-api
     environment:
-      - PersistenciaApiUrl=http://fiap.persistencia_api:5148
+      - ASPNETCORE_URLS=http://+:8080
+      - PersistenciaApiUrl=http://fiap.persistencia_api:8080
     ports:
-      - "5083:5083"
+      - "8082:8080"
     networks:
       - app_network
     command: [ "dotnet", "cadastro-api.dll" ]
