@@ -1,5 +1,5 @@
 # Etapa Build
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copia o código de ambas as APIs
@@ -17,14 +17,14 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o /out-cadastro
 
 # Etapa Runtime para persistencia-api
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS persistencia-api
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS persistencia-api
 WORKDIR /app
 COPY --from=build /out-persistencia .
 EXPOSE 5148
 ENTRYPOINT ["dotnet", "persistencia-api.dll"]
 
 # Etapa Runtime para cadastro-api
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS cadastro-api
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS cadastro-api
 WORKDIR /app
 COPY --from=build /out-cadastro .
 EXPOSE 5083
