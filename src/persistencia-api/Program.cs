@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using persistencia_api.Data;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,10 +24,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpMetrics();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapMetrics();
 
 app.Run();
