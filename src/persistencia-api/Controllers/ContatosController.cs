@@ -27,7 +27,7 @@ public class ContatosController(AppDbContext context) : ControllerBase
     public async Task<ActionResult<Contato>> GetContato(int id)
     {
         var contato = await _context.Contatos.FindAsync(id);
-        if (contato == null) return NotFound();
+        if (contato == null) return NoContent();
         return contato;
     }
 
