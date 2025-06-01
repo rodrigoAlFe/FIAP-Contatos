@@ -58,7 +58,7 @@ public class ContatosController(AppDbContext context) : ControllerBase
         return NoContent();
     }
 
-    // DELETE: api/Contatos/5
+    // DELETE: api/Contatos/5/
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteContato(int id)
     {
