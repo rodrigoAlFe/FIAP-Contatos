@@ -23,8 +23,11 @@ jobs:
       - name: Restaura as dependencias
         run: dotnet restore
 
-      - name: Builda a aplicação
-        run: dotnet build src/FIAP.Contatos/FIAP.Contatos.csproj --no-restore --configuration Release
+      - name: Builda a aplicação de cadastro
+        run: dotnet build src/cadastro-api/cadastro-api.csproj --no-restore --configuration Release
+
+      - name: Builda a aplicação de persistencia
+        run: dotnet build src/persistencia-api/persistencia-api.csproj --no-restore --configuration Release
 
       - name: Executa os testes unitários
         run: dotnet test test/Domain.Test/Domain.Test.csproj --configuration Release --verbosity normal
