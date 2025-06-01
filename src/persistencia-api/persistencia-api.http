@@ -1,0 +1,6 @@
+@persistencia_api_HostAddress = http://localhost:5148
+
+GET {{persistencia_api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

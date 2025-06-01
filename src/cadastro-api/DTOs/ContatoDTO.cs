@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
 
-namespace FIAP.Contatos.Domain.Entities;
+namespace cadastro_api.DTOs;
 
-public class Contato
+public class ContatoDTO
 {
-    public int Id { get; set; }
+    public int Id { get; set; } // Incluir para atualização/resposta
 
     [Required(ErrorMessage = "O Campo Nome é obrigatório.")]
     public string? Nome { get; set; }
@@ -21,7 +20,4 @@ public class Contato
     [Required(ErrorMessage = "O Campo DDD é obrigatório.")]
     [RegularExpression(@"^\d{2}$", ErrorMessage = "DDD no formato inválido.")]
     public int Ddd { get; set; }
-
-        
-        
 }
