@@ -19,7 +19,7 @@ public class ContatosController(IHttpClientFactory httpClientFactory, ILogger<Co
         var httpClient = _httpClientFactory.CreateClient("PersistenciaApiClient");
         try
         {
-            var response = await httpClient.GetAsync("/api/contatos");
+            var response = await httpClient.GetAsync("/api/persistencia/contatos");
             if (response.IsSuccessStatusCode)
             {
                 var contatos = await response.Content.ReadFromJsonAsync<IEnumerable<ContatoDTO>>();
@@ -55,7 +55,7 @@ public class ContatosController(IHttpClientFactory httpClientFactory, ILogger<Co
         try
         {
             // Chamar POST da persistencia-api
-            var response = await httpClient.PostAsync("/api/contatos", content);
+            var response = await httpClient.PostAsync("/api/persistencia/contatos", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -89,7 +89,7 @@ public class ContatosController(IHttpClientFactory httpClientFactory, ILogger<Co
         var httpClient = _httpClientFactory.CreateClient("PersistenciaApiClient");
         try
         {
-            var response = await httpClient.GetAsync($"/api/contatos/{id}");
+            var response = await httpClient.GetAsync($"/api/persistencia/contatos/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var contato = await response.Content.ReadFromJsonAsync<ContatoDTO>();
@@ -133,7 +133,7 @@ public class ContatosController(IHttpClientFactory httpClientFactory, ILogger<Co
 
         try
         {
-            var response = await httpClient.PutAsync($"/api/contatos/{id}", content);
+            var response = await httpClient.PutAsync($"/api/persistencia/contatos/{id}", content);
             if (response.IsSuccessStatusCode)
             {
                 return NoContent();
@@ -164,7 +164,7 @@ public class ContatosController(IHttpClientFactory httpClientFactory, ILogger<Co
         var httpClient = _httpClientFactory.CreateClient("PersistenciaApiClient");
         try
         {
-            var response = await httpClient.DeleteAsync($"/api/contatos/{id}");
+            var response = await httpClient.DeleteAsync($"/api/persistencia/contatos/{id}");
             if (response.IsSuccessStatusCode)
             {
                 return NoContent();

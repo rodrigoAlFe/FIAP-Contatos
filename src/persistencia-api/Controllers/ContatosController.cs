@@ -5,7 +5,7 @@ using persistencia_api.Entities;
 
 namespace persistencia_api.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/persistencia/[controller]")]
 [ApiController]
 public class ContatosController(AppDbContext context) : ControllerBase
 {

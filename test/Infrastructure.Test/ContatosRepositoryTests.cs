@@ -25,7 +25,7 @@ public class ContatosControllerTests : IClassFixture<CustomWebApplicationFactory
         // Arrange - (opcional: inserir dados via POST se necessário)
 
         // Act
-        var response = await _client.GetAsync("/api/contatos"); // ajuste para a rota correta
+        var response = await _client.GetAsync("/api/persistencia/contatos"); // ajuste para a rota correta
         response.EnsureSuccessStatusCode();
 
         var contatos = await response.Content.ReadFromJsonAsync<List<Contato>>();
@@ -40,7 +40,7 @@ public class ContatosControllerTests : IClassFixture<CustomWebApplicationFactory
     [InlineData(21)]
     public async Task GetAllByDDDAsync_DeveRetornarContatosPorDDD(int ddd)
     {
-        var response = await _client.GetAsync($"/api/contatos?ddd={ddd}");
+        var response = await _client.GetAsync($"/api/persistencia/contatos?ddd={ddd}");
         response.EnsureSuccessStatusCode();
 
         var contatos = await response.Content.ReadFromJsonAsync<List<Contato>>();
@@ -60,12 +60,15 @@ public class ContatosControllerTests : IClassFixture<CustomWebApplicationFactory
             Ddd = 22
         };
 
-        var response = await _client.PostAsJsonAsync("/api/contatos", novoContato);
+        var response = await _client.PostAsJsonAsync("/api/persistencia/contatos", novoContato);
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
         var contatoCriado = await response.Content.ReadFromJsonAsync<Contato>();
+        await _client.DeleteAsync($"/api/persistencia/contatos/{contatoCriado!.Id}");
+
         Assert.NotNull(contatoCriado);
         Assert.Equal("Ana Souza", contatoCriado!.Nome);
+
     }
 
     [Fact]
@@ -73,11 +76,11 @@ public class ContatosControllerTests : IClassFixture<CustomWebApplicationFactory
     {
         // Pré-condição: inserir contato
         var novoContato = new Contato { Nome = "Teste", Telefone = "123", Email = "t@t.com", Ddd = 11 };
-        var postResponse = await _client.PostAsJsonAsync("/api/Contatos", novoContato);
+        var postResponse = await _client.PostAsJsonAsync("/api/persistencia/Contatos", novoContato);
         var criado = await postResponse.Content.ReadFromJsonAsync<Contato>();
 
         // Act
-        var response = await _client.GetAsync($"/api/Contatos/{criado!.Id}");
+        var response = await _client.GetAsync($"/api/persistencia/Contatos/{criado!.Id}");
 
         // Garante que o status code seja de sucesso (200, 201, etc.)
         response.EnsureSuccessStatusCode();
@@ -102,10 +105,10 @@ public class ContatosControllerTests : IClassFixture<CustomWebApplicationFactory
     public async Task DeleteAsync_DeveRemoverContato()
     {
         var novoContato = new Contato { Nome = "Para Deletar", Telefone = "0000", Email = "x@x.com", Ddd = 31 };
-        var postResponse = await _client.PostAsJsonAsync("/api/contatos", novoContato);
+        var postResponse = await _client.PostAsJsonAsync("/api/persistencia/contatos", novoContato);
         var criado = await postResponse.Content.ReadFromJsonAsync<Contato>();
 
-        var deleteResponse = await _client.DeleteAsync($"/api/contatos/{criado!.Id}");
+        var deleteResponse = await _client.DeleteAsync($"/api/persistencia/contatos/{criado!.Id}");
         Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
     }
 
@@ -113,16 +116,16 @@ public class ContatosControllerTests : IClassFixture<CustomWebApplicationFactory
     public async Task UpdateAsync_DeveAtualizarContato()
     {
         var novoContato = new Contato { Nome = "Atualizar", Telefone = "0000", Email = "a@a.com", Ddd = 44 };
-        var postResponse = await _client.PostAsJsonAsync("/api/Contatos", novoContato);
+        var postResponse = await _client.PostAsJsonAsync("/api/persistencia/Contatos", novoContato);
         var criado = await postResponse.Content.ReadFromJsonAsync<Contato>();
 
         criado!.Nome = "Atualizado";
         novoContato.Id = criado.Id;
 
-        var putResponse = await _client.PutAsJsonAsync($"/api/Contatos/{criado.Id}", criado);
+        var putResponse = await _client.PutAsJsonAsync($"/api/persistencia/Contatos/{criado.Id}", criado);
         Assert.Equal(HttpStatusCode.BadRequest, putResponse.StatusCode);
 
-        var getResponse = await _client.GetAsync($"/api/Contatos/{criado.Id}");
+        var getResponse = await _client.GetAsync($"/api/persistencia/Contatos/{criado.Id}");
 
         var contentString = await getResponse.Content.ReadAsStringAsync();
         if (string.IsNullOrWhiteSpace(contentString))
