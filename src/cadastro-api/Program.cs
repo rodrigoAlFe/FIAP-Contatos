@@ -30,8 +30,6 @@ app.UseHttpMetrics();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
 app.MapControllers();
 
 app.MapMetrics();

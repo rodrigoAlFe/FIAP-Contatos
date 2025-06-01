@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using FIAP.Contatos.Domain.Entities;
+using persistencia_api.Entities;
 
 namespace Domain.Test;
 
