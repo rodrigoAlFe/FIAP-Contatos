@@ -11,7 +11,7 @@ public class ContatosController(AppDbContext context) : ControllerBase
 {
     private readonly AppDbContext _context = context;
 
-    // GET: api/Contatos
+    // GET: api/Contatos/
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Contato>>> GetContatos([FromQuery] int? ddd)
     {
