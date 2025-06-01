@@ -6,7 +6,7 @@ public class Contato
 {
     public int Id { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "O Campo Nome é obrigatório.")]
     public string? Nome { get; set; }
 
     [Required]

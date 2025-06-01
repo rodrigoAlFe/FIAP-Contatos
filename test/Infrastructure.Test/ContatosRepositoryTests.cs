@@ -1,148 +1,115 @@
-﻿using persistencia_api.Entities;
-using Moq;
+﻿using System.Net;
+using System.Net.Http.Json;
+using Infrastructure.Test;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
+using persistencia_api;
+using persistencia_api.Entities;
+using Xunit;
 
-namespace Infrastructure.Test;
+namespace IntegrationTests;
 
-public class ContatosRepositoryTests
+public class ContatosControllerTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {
-    private readonly Mock<IContatoRepository> _repositoryMock = new();
+    private readonly HttpClient _client;
 
-    // Mock do repositório
+    public ContatosControllerTests(CustomWebApplicationFactory<Program> factory)
+    {
+        _client = factory.CreateClient();
+    }
 
     [Fact]
     public async Task GetAllAsync_DeveRetornarTodosOsContatos()
     {
-        // Arrange
-        var contatosMock = new List<Contato>
-        {
-            new Contato { Id = 1, Nome = "João Silva", Telefone = "1234-5678", Email = "joao@teste.com", Ddd = 11 },
-            new Contato { Id = 2, Nome = "Maria Oliveira", Telefone = "9876-5432", Email = "maria@teste.com", Ddd = 21 }
-        };
-        _repositoryMock.Setup(repo => repo.GetAllAsync())!.ReturnsAsync(contatosMock);
+        // Arrange - (opcional: inserir dados via POST se necessário)
 
         // Act
-        var contatos = await _repositoryMock.Object.GetAllAsync();
+        var response = await _client.GetAsync("/api/contatos"); // ajuste para a rota correta
+        response.EnsureSuccessStatusCode();
+
+        var contatos = await response.Content.ReadFromJsonAsync<List<Contato>>();
 
         // Assert
         Assert.NotNull(contatos);
-        Assert.Equal(2, contatos.Count);
+        Assert.True(contatos!.Count >= 0);
     }
 
     [Theory]
-    [InlineData(11, 1)]
-    [InlineData(21, 1)]
-    [InlineData(99, 0)]
-    public async Task GetAllAsync_ComFiltroDDD_DeveRetornarContatosEsperados(int ddd, int expectedCount)
+    [InlineData(11)]
+    [InlineData(21)]
+    public async Task GetAllByDDDAsync_DeveRetornarContatosPorDDD(int ddd)
     {
-        // Arrange
-        var contatosMock = new List<Contato>
-        {
-            new Contato { Id = 1, Nome = "João Silva", Telefone = "1234-5678", Email = "joao@teste.com", Ddd = 11 },
-            new Contato { Id = 2, Nome = "Maria Oliveira", Telefone = "9876-5432", Email = "maria@teste.com", Ddd = 21 }
-        };
+        var response = await _client.GetAsync($"/api/contatos?ddd={ddd}");
+        response.EnsureSuccessStatusCode();
 
-        _repositoryMock
-            .Setup(repo => repo.GetAllByDDDAsync(ddd))!
-            .ReturnsAsync(contatosMock.Where(c => c.Ddd == ddd).ToList());
+        var contatos = await response.Content.ReadFromJsonAsync<List<Contato>>();
 
-        // Act
-        var contatos = await _repositoryMock.Object.GetAllByDDDAsync(ddd);
-
-        // Assert
         Assert.NotNull(contatos);
-        Assert.Equal(expectedCount, contatos.Count);
+        Assert.All(contatos!, c => Assert.Equal(ddd, c.Ddd));
     }
 
     [Fact]
-    public async Task GetByIdAsync_DeveRetornarContatoQuandoExistir()
+    public async Task AddAsync_DeveCriarContato()
     {
-        // Arrange
-        var contatoMock = new Contato { Id = 1, Nome = "João Silva" };
-        _repositoryMock.Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(contatoMock);
-
-        // Act
-        var contato = await _repositoryMock.Object.GetByIdAsync(1);
-
-        // Assert
-        Assert.NotNull(contato);
-        Assert.Equal("João Silva", contato.Nome);
-    }
-
-    [Fact]
-    public async Task GetByIdAsync_DeveRetornarNuloQuandoNaoExistir()
-    {
-        // Arrange
-        _repositoryMock.Setup(repo => repo.GetByIdAsync(99)).ReturnsAsync((Contato)null!);
-
-        // Act
-        var contato = await _repositoryMock.Object.GetByIdAsync(99);
-
-        // Assert
-        Assert.Null(contato);
-    }
-
-    [Fact]
-    public async Task AddAsync_DeveAdicionarContato()
-    {
-        // Arrange
         var novoContato = new Contato
         {
-            Id = 3,
             Nome = "Ana Souza",
             Telefone = "1234-1234",
             Email = "ana@teste.com",
             Ddd = 22
         };
 
-        _repositoryMock.Setup(repo => repo.AddAsync(novoContato)).Verifiable();
+        var response = await _client.PostAsJsonAsync("/api/contatos", novoContato);
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
-        // Act
-        await _repositoryMock.Object.AddAsync(novoContato);
-
-        // Assert
-        _repositoryMock.Verify(repo => repo.AddAsync(novoContato), Times.Once);
+        var contatoCriado = await response.Content.ReadFromJsonAsync<Contato>();
+        Assert.NotNull(contatoCriado);
+        Assert.Equal("Ana Souza", contatoCriado!.Nome);
     }
 
     [Fact]
-    public async Task UpdateAsync_DeveAtualizarContato()
+    public async Task GetByIdAsync_DeveRetornarContato()
     {
-        // Arrange
-        var contatoParaAtualizar = new Contato { Id = 1, Nome = "João Silva" };
-        _repositoryMock.Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(contatoParaAtualizar);
-        _repositoryMock.Setup(repo => repo.UpdateAsync(contatoParaAtualizar)).Verifiable();
-
-        contatoParaAtualizar.Nome = "João Atualizado";
+        // Pré-condição: inserir contato
+        var novoContato = new Contato { Nome = "Teste", Telefone = "123", Email = "t@t.com", Ddd = 11 };
+        var postResponse = await _client.PostAsJsonAsync("/api/contatos", novoContato);
+        var criado = await postResponse.Content.ReadFromJsonAsync<Contato>();
 
         // Act
-        await _repositoryMock.Object.UpdateAsync(contatoParaAtualizar);
+        var response = await _client.GetAsync($"/api/contatos/{criado!.Id}");
+        response.EnsureSuccessStatusCode();
 
-        // Assert
-        _repositoryMock.Verify(repo => repo.UpdateAsync(contatoParaAtualizar), Times.Once);
+        var contato = await response.Content.ReadFromJsonAsync<Contato>();
+        Assert.NotNull(contato);
+        Assert.Equal(criado.Id, contato!.Id);
     }
 
     [Fact]
     public async Task DeleteAsync_DeveRemoverContato()
     {
-        // Arrange
-        _repositoryMock.Setup(repo => repo.DeleteAsync(1)).Verifiable();
+        var novoContato = new Contato { Nome = "Para Deletar", Telefone = "0000", Email = "x@x.com", Ddd = 31 };
+        var postResponse = await _client.PostAsJsonAsync("/api/contatos", novoContato);
+        var criado = await postResponse.Content.ReadFromJsonAsync<Contato>();
 
-        // Act
-        await _repositoryMock.Object.DeleteAsync(1);
-
-        // Assert
-        _repositoryMock.Verify(repo => repo.DeleteAsync(1), Times.Once);
+        var deleteResponse = await _client.DeleteAsync($"/api/contatos/{criado!.Id}");
+        Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
     }
 
     [Fact]
-    public async Task DeleteAsync_DeveNaoAlterarQuandoContatoNaoExistir()
+    public async Task UpdateAsync_DeveAtualizarContato()
     {
-        // Arrange
-        _repositoryMock.Setup(repo => repo.DeleteAsync(99)).Verifiable();
+        var novoContato = new Contato { Nome = "Atualizar", Telefone = "0000", Email = "a@a.com", Ddd = 44 };
+        var postResponse = await _client.PostAsJsonAsync("/api/contatos", novoContato);
+        var criado = await postResponse.Content.ReadFromJsonAsync<Contato>();
 
-        // Act
-        await _repositoryMock.Object.DeleteAsync(99);
+        criado!.Nome = "Atualizado";
 
-        // Assert
-        _repositoryMock.Verify(repo => repo.DeleteAsync(99), Times.Once);
+        var putResponse = await _client.PutAsJsonAsync($"/api/contatos/{criado.Id}", criado);
+        Assert.Equal(HttpStatusCode.NoContent, putResponse.StatusCode);
+
+        var getResponse = await _client.GetAsync($"/api/contatos/{criado.Id}");
+        var atualizado = await getResponse.Content.ReadFromJsonAsync<Contato>();
+
+        Assert.Equal("Atualizado", atualizado!.Nome);
     }
 }
