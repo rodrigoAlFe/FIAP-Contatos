@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using FIAP.Contatos.Domain.Entities;
+using persistencia_api.Entities;
 
 namespace Domain.Test;
 
@@ -46,7 +46,6 @@ public class ContatoTests
         var validationResults = ValidateModel(contato);
 
         // Assert
-        Assert.NotEmpty(validationResults);
         Assert.Contains(validationResults, v => v.ErrorMessage == mensagemEsperada);
     }
 

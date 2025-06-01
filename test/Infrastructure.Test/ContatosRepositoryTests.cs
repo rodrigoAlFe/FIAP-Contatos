@@ -1,5 +1,4 @@
-﻿using FIAP.Contatos.Domain.Entities;
-using FIAP.Contatos.Infrastructure.Repositories;
+﻿using persistencia_api.Entities;
 using Moq;
 
 namespace Infrastructure.Test;
