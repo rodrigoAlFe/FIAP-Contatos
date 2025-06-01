@@ -46,7 +46,6 @@ public class ContatoTests
         var validationResults = ValidateModel(contato);
 
         // Assert
-        Assert.NotEmpty(validationResults);
         Assert.Contains(validationResults, v => v.ErrorMessage == mensagemEsperada);
     }
 
