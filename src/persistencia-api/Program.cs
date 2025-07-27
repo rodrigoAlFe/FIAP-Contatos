@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using persistencia_api.Data;
+using persistencia_api.Services;
 using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHostedService<RabbitMqContatoConsumer>();
 
 var app = builder.Build();
 
