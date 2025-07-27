@@ -15,6 +15,18 @@ services:
     volumes:
       - sqlserver_data:/var/opt/mssql
 
+  rabbitmq:
+    image: masstransit/rabbitmq
+    container_name: fiap.rabbitmq
+    ports:
+      - "5672:5672" # Porta de comunicação com aplicações (AMQP)
+      - "15672:15672" # Porta da interface de administração web
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    networks:
+      - app_network
+
   persistencia-api:
     build:
       context: .
@@ -23,6 +35,7 @@ services:
     container_name: fiap.persistencia_api
     depends_on:
       - sqlserver
+      - rabbitmq
     environment:
       - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__DefaultConnection=Server=fiap.sqlserver,1433;Database=Contato-FIAP;User ID=sa;Password=1q2w3e4r@#$;Trusted_Connection=False; TrustServerCertificate=True;
@@ -42,6 +55,7 @@ services:
     container_name: fiap.cadastro_api
     depends_on:
       - persistencia-api
+      - rabbitmq
     environment:
       - ASPNETCORE_URLS=http://+:8080
       - PersistenciaApiUrl=http://fiap.persistencia_api:8080
