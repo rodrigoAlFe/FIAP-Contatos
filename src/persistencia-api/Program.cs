@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using persistencia_api.Data;
+using persistencia_api.Infrastructure;
+using persistencia_api.Services;
 using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Configure RabbitMQ
+builder.Services.Configure<RabbitMqConfiguration>(
+    builder.Configuration.GetSection("RabbitMq"));
+
+// Register message consumer as hosted service
+builder.Services.AddHostedService<ContatoMessageConsumer>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

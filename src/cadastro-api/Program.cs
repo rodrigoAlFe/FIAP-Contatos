@@ -1,3 +1,5 @@
+using cadastro_api.Infrastructure;
+using cadastro_api.Services;
 using Polly;
 using Polly.Extensions.Http;
 using Prometheus;
@@ -5,6 +7,13 @@ using Prometheus;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// Configure RabbitMQ
+builder.Services.Configure<RabbitMqConfiguration>(
+    builder.Configuration.GetSection("RabbitMq"));
+
+// Register message publisher
+builder.Services.AddSingleton<IMessagePublisher, RabbitMqMessagePublisher>();
 
 builder.Services.AddHttpClient("PersistenciaApiClient", client =>
 {

@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\persistencia-api\persistencia-api.csproj" />
+      <ProjectReference Include="..\..\src\cadastro-api\cadastro-api.csproj" />
     </ItemGroup>
 
     <ItemGroup>

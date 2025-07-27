@@ -1,4 +1,6 @@
 ﻿using cadastro_api.DTOs;
+using cadastro_api.Messages;
+using cadastro_api.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
@@ -7,10 +9,14 @@ namespace cadastro_api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ContatosController(IHttpClientFactory httpClientFactory, ILogger<ContatosController> logger) : ControllerBase
+public class ContatosController(
+    IHttpClientFactory httpClientFactory, 
+    ILogger<ContatosController> logger,
+    IMessagePublisher messagePublisher) : ControllerBase
 {
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
     private readonly ILogger<ContatosController> _logger = logger;
+    private readonly IMessagePublisher _messagePublisher = messagePublisher;
 
     // GET api/Contatos
     [HttpGet]
@@ -49,36 +55,28 @@ public class ContatosController(IHttpClientFactory httpClientFactory, ILogger<Co
             return BadRequest(ModelState);
         }
 
-        var httpClient = _httpClientFactory.CreateClient("PersistenciaApiClient");
-        var content = new StringContent(JsonSerializer.Serialize(contatoDto), Encoding.UTF8, "application/json");
-
         try
         {
-            // Chamar POST da persistencia-api
-            var response = await httpClient.PostAsync("/api/persistencia/contatos", content);
+            // Create message and publish to RabbitMQ
+            var message = new ContatoCreatedMessage
+            {
+                Nome = contatoDto.Nome,
+                Telefone = contatoDto.Telefone,
+                Email = contatoDto.Email,
+                Ddd = contatoDto.Ddd
+            };
 
-            if (response.IsSuccessStatusCode)
-            {
-                var createdContato = await response.Content.ReadFromJsonAsync<ContatoDTO>();
-                // Retorna 201 Created com a localização e o objeto criado
-                return CreatedAtAction(nameof(GetContatoById), new { id = createdContato?.Id ?? 0 }, createdContato);
-            }
-            else
-            {
-                _logger.LogError("Erro ao chamar Persistencia API (POST): {StatusCode}", response.StatusCode);
-                // Retornar um erro genérico ou o erro da API de persistência
-                return StatusCode((int)response.StatusCode, await response.Content.ReadAsStringAsync());
-            }
-        }
-        catch (HttpRequestException ex)
-        {
-            _logger.LogError(ex, "Erro de rede ao chamar Persistencia API (POST)");
-            return StatusCode(503, "Serviço de persistência indisponível."); // Service Unavailable
+            await _messagePublisher.PublishContatoCreatedAsync(message);
+            
+            _logger.LogInformation("Contato creation message published for: {Nome}", contatoDto.Nome);
+            
+            // Return 202 Accepted since this is async processing
+            return Accepted(new { Message = "Contato creation request received and is being processed." });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao criar contato");
-            return StatusCode(500, "Ocorreu um erro interno.");
+            _logger.LogError(ex, "Error publishing contato creation message");
+            return StatusCode(500, "Erro interno ao processar solicitação de criação de contato.");
         }
     }
 

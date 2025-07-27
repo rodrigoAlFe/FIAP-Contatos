@@ -8,7 +8,7 @@ Projeto Pós Tech Arquitetura de Sistemas .NET - FIAP
 ``` bash
    docker-compose up
 ```
-Esse comando irá construir todas as imagens e iniciar os containers necessários para o projeto, como o banco de dados MySQL e a aplicação API.
+Esse comando irá construir todas as imagens e iniciar os containers necessários para o projeto, como o banco de dados SQL Server, RabbitMQ e as aplicações API.
 
 > **Dica:** Para rodar os containers em segundo plano (background), utilize o comando `docker-compose up -d`.
 >
@@ -32,12 +32,23 @@ Esse script irá aplicar as migrations usando o Entity Framework Core e preparar
 ## Observações
 - Após rodar o comando `docker-compose up`, o projeto estará disponível na porta definida no arquivo `docker-compose.yml`. Geralmente, o endereço será algo como:
 ``` 
-  http://localhost:8080/swagger  # Documentação da API
+  http://localhost:8082/swagger  # API de Cadastro (Frontend)
+  http://localhost:8080/swagger  # API de Persistência (Backend)
   http://localhost:9090/metrics  # Métricas do Prometheus
   http://localhost:3000/         # Grafana
+  http://localhost:15672/        # RabbitMQ Management UI (admin/admin123)
 ```
 - O script `./migrations.sh` garante que o banco de dados seja configurado corretamente com base no código atual.
 - Sempre que houver mudanças em entidades ou na estrutura de banco de dados, você poderá criar novas migrations e aplicar pelo mesmo processo.
+
+## Mensageria com RabbitMQ
+
+O projeto agora inclui **RabbitMQ** para comunicação assíncrona entre as APIs:
+
+- **Criação de contatos**: Utiliza mensageria assíncrona via RabbitMQ
+- **Outras operações**: Continuam usando comunicação HTTP direta
+
+Para mais detalhes sobre a implementação do RabbitMQ, consulte o arquivo [RABBITMQ.md](RABBITMQ.md).
 
 
 ### Estrutura de Projetos na Solução

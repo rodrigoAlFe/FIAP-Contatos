@@ -23,9 +23,11 @@ services:
     container_name: fiap.persistencia_api
     depends_on:
       - sqlserver
+      - rabbitmq
     environment:
       - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__DefaultConnection=Server=fiap.sqlserver,1433;Database=Contato-FIAP;User ID=sa;Password=1q2w3e4r@#$;Trusted_Connection=False; TrustServerCertificate=True;
+      - RabbitMq__ConnectionString=amqp://admin:admin123@fiap.rabbitmq:5672/
     ports:
       - "8080:8080"
     networks:
@@ -42,9 +44,11 @@ services:
     container_name: fiap.cadastro_api
     depends_on:
       - persistencia-api
+      - rabbitmq
     environment:
       - ASPNETCORE_URLS=http://+:8080
       - PersistenciaApiUrl=http://fiap.persistencia_api:8080
+      - RabbitMq__ConnectionString=amqp://admin:admin123@fiap.rabbitmq:5672/
     ports:
       - "8082:8080"
     networks:
@@ -78,6 +82,21 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: fiap.rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app_network
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin123
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
 networks:
   app_network:
     driver: bridge
@@ -87,3 +106,4 @@ volumes:
   persistencia_data:
   cadastro_data:
   grafana_data:
+  rabbitmq_data:
