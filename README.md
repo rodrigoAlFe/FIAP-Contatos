@@ -15,9 +15,9 @@ Esse comando irá construir todas as imagens e iniciar os containers necessário
 
 ## Executar Migrations do Banco de Dados
 Se for a primeira execução será necessário executar as migrations para preparar o banco de dados com as tabelas e configurações iniciais, siga os passos abaixo:
-1. Abra um terminal dentro do container da aplicação `fiap.contatos_api`. Para entrar no container, você pode usar um comando similar a este:
+1. Abra um terminal dentro do container da aplicação `fiap.cadastro_api`. Para entrar no container, você pode usar um comando similar a este:
 ``` bash
-   docker exec -it fiap.contatos_api bash
+   docker exec -it fiap.cadastro_api bash
 ```
 Isso abrirá um shell bash dentro do container.
 1. Navegue até a pasta `src` da aplicação:
