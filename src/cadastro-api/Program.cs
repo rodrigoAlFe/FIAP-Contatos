@@ -1,3 +1,4 @@
+using cadastro_api.Services;
 using Polly;
 using Polly.Extensions.Http;
 using Prometheus;
@@ -16,6 +17,8 @@ builder.Services.AddHttpClient("PersistenciaApiClient", client =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<RabbitMqService>();
+
 
 var app = builder.Build();
 

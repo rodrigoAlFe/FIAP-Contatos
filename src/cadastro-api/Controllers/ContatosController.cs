@@ -1,4 +1,5 @@
 ﻿using cadastro_api.DTOs;
+using cadastro_api.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
@@ -7,10 +8,11 @@ namespace cadastro_api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ContatosController(IHttpClientFactory httpClientFactory, ILogger<ContatosController> logger) : ControllerBase
+public class ContatosController(IHttpClientFactory httpClientFactory, ILogger<ContatosController> logger, RabbitMqService rabbitMqService) : ControllerBase
 {
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
     private readonly ILogger<ContatosController> _logger = logger;
+    private readonly RabbitMqService _rabbitMqService = rabbitMqService;
 
     // GET api/Contatos
     [HttpGet]
@@ -42,43 +44,28 @@ public class ContatosController(IHttpClientFactory httpClientFactory, ILogger<Co
 
     // POST api/Contatos
     [HttpPost]
-    public async Task<IActionResult> CreateContato([FromBody] ContatoDTO contatoDto)
+    public IActionResult CreateContato([FromBody] ContatoDTO contatoDto)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var httpClient = _httpClientFactory.CreateClient("PersistenciaApiClient");
-        var content = new StringContent(JsonSerializer.Serialize(contatoDto), Encoding.UTF8, "application/json");
+        var msg = new ContatoFilaDTO
+        {
+            Acao = "create",
+            Contato = contatoDto
+        };
 
         try
         {
-            // Chamar POST da persistencia-api
-            var response = await httpClient.PostAsync("/api/persistencia/contatos", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var createdContato = await response.Content.ReadFromJsonAsync<ContatoDTO>();
-                // Retorna 201 Created com a localização e o objeto criado
-                return CreatedAtAction(nameof(GetContatoById), new { id = createdContato?.Id ?? 0 }, createdContato);
-            }
-            else
-            {
-                _logger.LogError("Erro ao chamar Persistencia API (POST): {StatusCode}", response.StatusCode);
-                // Retornar um erro genérico ou o erro da API de persistência
-                return StatusCode((int)response.StatusCode, await response.Content.ReadAsStringAsync());
-            }
-        }
-        catch (HttpRequestException ex)
-        {
-            _logger.LogError(ex, "Erro de rede ao chamar Persistencia API (POST)");
-            return StatusCode(503, "Serviço de persistência indisponível."); // Service Unavailable
+            _rabbitMqService.Publish(msg);
+            return Accepted(new { message = "Contato enviado para processamento." });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao criar contato");
-            return StatusCode(500, "Ocorreu um erro interno.");
+            _logger.LogError(ex, "Erro ao publicar contato na fila RabbitMQ (POST)");
+            return StatusCode(500, "Erro ao enviar para fila.");
         }
     }
 
@@ -116,7 +103,7 @@ public class ContatosController(IHttpClientFactory httpClientFactory, ILogger<Co
 
     // PUT api/Contatos/{id}
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateContato(int id, [FromBody] ContatoDTO contatoDto)
+    public IActionResult UpdateContato(int id, [FromBody] ContatoDTO contatoDto)
     {
         if (id != contatoDto.Id)
         {
@@ -128,63 +115,43 @@ public class ContatosController(IHttpClientFactory httpClientFactory, ILogger<Co
             return BadRequest(ModelState);
         }
 
-        var httpClient = _httpClientFactory.CreateClient("PersistenciaApiClient");
-        var content = new StringContent(JsonSerializer.Serialize(contatoDto), Encoding.UTF8, "application/json");
+        var msg = new ContatoFilaDTO
+        {
+            Acao = "update",
+            Contato = contatoDto
+        };
 
         try
         {
-            var response = await httpClient.PutAsync($"/api/persistencia/contatos/{id}", content);
-            if (response.IsSuccessStatusCode)
-            {
-                return NoContent();
-            }
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                return NotFound();
-            }
-            _logger.LogError("Erro ao chamar Persistencia API (PUT): {StatusCode}", response.StatusCode);
-            return StatusCode((int)response.StatusCode, await response.Content.ReadAsStringAsync());
-        }
-        catch (HttpRequestException ex)
-        {
-            _logger.LogError(ex, "Erro de rede ao chamar Persistencia API (PUT)");
-            return StatusCode(503, "Serviço de persistência indisponível.");
+            _rabbitMqService.Publish(msg);
+            return Accepted(new { message = "Atualização de contato enviada para processamento." });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao atualizar contato");
-            return StatusCode(500, "Ocorreu um erro interno.");
+            _logger.LogError(ex, "Erro ao publicar atualização na fila RabbitMQ (PUT)");
+            return StatusCode(500, "Erro ao enviar para fila.");
         }
     }
 
     // DELETE api/Contatos/{id}
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteContato(int id)
+    public IActionResult DeleteContato(int id)
     {
-        var httpClient = _httpClientFactory.CreateClient("PersistenciaApiClient");
+        var msg = new ContatoFilaDTO
+        {
+            Acao = "delete",
+            Id = id
+        };
+
         try
         {
-            var response = await httpClient.DeleteAsync($"/api/persistencia/contatos/{id}");
-            if (response.IsSuccessStatusCode)
-            {
-                return NoContent();
-            }
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                return NotFound();
-            }
-            _logger.LogError("Erro ao chamar Persistencia API (DELETE): {StatusCode}", response.StatusCode);
-            return StatusCode((int)response.StatusCode, await response.Content.ReadAsStringAsync());
-        }
-        catch (HttpRequestException ex)
-        {
-            _logger.LogError(ex, "Erro de rede ao chamar Persistencia API (DELETE)");
-            return StatusCode(503, "Serviço de persistência indisponível.");
+            _rabbitMqService.Publish(msg);
+            return Accepted(new { message = "Solicitação de exclusão enviada para processamento." });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao deletar contato");
-            return StatusCode(500, "Ocorreu um erro interno.");
+            _logger.LogError(ex, "Erro ao publicar exclusão na fila RabbitMQ (DELETE)");
+            return StatusCode(500, "Erro ao enviar para fila.");
         }
     }
 }
