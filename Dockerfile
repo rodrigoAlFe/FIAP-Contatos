@@ -41,7 +41,7 @@ COPY --from=build-persistencia /out-persistencia/migrations-bundle .
 RUN chmod +x /app/migrations-bundle
 EXPOSE 5148
 #ENTRYPOINT ["dotnet", "persistencia-api.dll"]
-ENTRYPOINT ["/bin/sh", "-c", "/app/migrations-bundle --connection $ConnectionStrings__DefaultConnection && dotnet persistencia-api.dll"]
+ENTRYPOINT ["/bin/sh", "-c", "/app/migrations-bundle && dotnet persistencia-api.dll"]
 
 # Etapa Runtime para cadastro-api
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS cadastro-api
