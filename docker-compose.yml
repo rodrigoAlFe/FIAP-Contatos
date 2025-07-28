@@ -31,7 +31,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: persistencia-api
+      target: runtime-persistencia
     container_name: fiap.persistencia_api
     depends_on:
       - sqlserver
@@ -51,7 +51,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: cadastro-api
+      target: runtime-persistencia
     container_name: fiap.cadastro_api
     depends_on:
       - persistencia-api
