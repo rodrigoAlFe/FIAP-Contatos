@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: persistencia-api
+  namespace: fiap-app
+  labels:
+    app: persistencia-api
+    tier: backend
+  annotations:
+    description: "Deployment para o microsserviço persistencia-api"
+spec:
+  replicas: 1 # ajuste conforme a necessidade de escalabilidade
+  selector:
+    matchLabels:
+      app: persistencia-api
+  template:
+    metadata:
+      labels:
+        app: persistencia-api
+        tier: backend
+        environment: development
+      annotations:
+        pod-version: "v1"
+    spec:
+      containers:
+        - name: persistencia-api
+          image: carlosalbertofilho/fiap-contatos-persistencia-api:arm64-latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"
+            - name: ASPNETCORE_URLS
+              value: "http://+:8080"
+            - name: ConnectionStrings__DefaultConnection
+              valueFrom:
+                configMapKeyRef:
+                  name: fiap-config
+                  key: persistencia-connection
+            - name: RabbitMq__Host
+              valueFrom:
+                configMapKeyRef:
+                  name: fiap-config
+                  key: rabbitmq-host
+            - name: RabbitMq__User
+              valueFrom:
+                configMapKeyRef:
+                  name: fiap-config
+                  key: rabbitmq-user
+            - name: RabbitMq__Pass
+              valueFrom:
+                configMapKeyRef:
+                  name: fiap-config
+                  key: rabbitmq-pass
+            - name: RabbitMq__Port
+              valueFrom:
+                configMapKeyRef:
+                  name: fiap-config
+                  key: rabbitmq-port
+          volumeMounts:
+            - name: persistencia-data
+              mountPath: /app
+      volumes:
+        - name: persistencia-data
+          persistentVolumeClaim:
+            claimName: pvc-persistencia

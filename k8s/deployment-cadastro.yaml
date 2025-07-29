@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cadastro-api
+  namespace: fiap-app
+  labels:
+    app: cadastro-api
+    tier: backend
+  annotations:
+    description: "Deployment para o microsserviço cadastro-api"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cadastro-api
+  template:
+    metadata:
+      labels:
+        app: cadastro-api
+        tier: backend
+        environment: development
+      annotations:
+        pod-version: "v1"
+    spec:
+      containers:
+        - name: cadastro-api
+          image: carlosalbertofilho/fiap-contatos-cadastro-api:arm64-latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"
+            - name: ASPNETCORE_URLS
+              value: "http://+:8080"
+            - name: PersistenciaApiUrl
+              value: "http://persistencia-api:8080"
+          volumeMounts:
+            - name: cadastro-data
+              mountPath: /app
+      volumes:
+        - name: cadastro-data
+          persistentVolumeClaim:
+            claimName: pvc-cadastro

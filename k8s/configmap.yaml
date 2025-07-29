@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fiap-config
+  namespace: fiap-app
+  labels:
+    app: fiap
+data:
+  persistencia-connection: "Server=fiap.sqlserver,1433;Database=Contato-FIAP;User ID=sa;Password=1q2w3e4r@#$;Trusted_Connection=False;TrustServerCertificate=True;"
+  rabbitmq-host: "rabbitmq"
+  rabbitmq-user: "admin"
+  rabbitmq-pass: "admin"
+  rabbitmq-port: "5672"
