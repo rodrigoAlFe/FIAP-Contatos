@@ -34,7 +34,7 @@ spec:
             - until /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P "1q2w3e4r@#$" -Q "SELECT 1"; do echo waiting for sqlserver; sleep 2; done;
       containers:
         - name: persistencia-api
-          image: carlosalbertofilho/fiap-contatos-persistencia-api:arm64-latest
+          image: carlosalbertofilho/fiap-contatos-persistencia-api:arm64-latest 
           ports:
             - containerPort: 8080
           env:
@@ -76,7 +76,7 @@ spec:
               cpu: "500m"
           volumeMounts:
             - name: persistencia-data
-              mountPath: /app
+              mountPath: /app/data
       volumes:
         - name: persistencia-data
           persistentVolumeClaim:

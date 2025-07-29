@@ -39,7 +39,7 @@ spec:
                   key: persistencia-api-url
           volumeMounts:
             - name: cadastro-data
-              mountPath: /app
+              mountPath: /app/data
           resources:
             requests:
               memory: "256Mi"

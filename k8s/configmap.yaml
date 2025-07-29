@@ -6,14 +6,14 @@ metadata:
   labels:
     app: fiap
 data:
-  persistencia-connection: "Server=fiap.sqlserver,1433;Database=Contato-FIAP;User ID=sa;Password=1q2w3e4r@#$;Trusted_Connection=False;TrustServerCertificate=True;"
-  rabbitmq-host: "rabbitmq"
+  persistencia-connection: "Server=sqlserver.fiap-app.svc.cluster.local,1433;Database=Contato-FIAP;User ID=sa;Password=1q2w3e4r@#$;Trusted_Connection=False;TrustServerCertificate=True;"
+  rabbitmq-host: "rabbitmq.fiap-app.svc.cluster.local"
   rabbitmq-user: "admin"
   rabbitmq-pass: "admin"
   rabbitmq-port: "5672"
   grafana-user: "admin"
   grafana-pass: "admin"
-  grafana-url: "http://fiap.grafana:3000"
+  grafana-url: "grafana.fiap-app.svc.cluster.local"
   prometheus-url: "http://fiap.prometheus:9090"
   cadastro-api-url: "http://fiap.cadastro_api:8080"
   persistencia-api-url: "http://fiap.persistencia_api:8080"
