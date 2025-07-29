@@ -6,10 +6,13 @@ metadata:
   labels:
     app: persistencia-api
     tier: backend
+    app.kubernetes.io/name: persistencia-api
+    app.kubernetes.io/part-of: fiap-contatos
+    app.kubernetes.io/component: backend
   annotations:
     description: "Deployment para o microsserviço persistencia-api"
 spec:
-  replicas: 1 # ajuste conforme a necessidade de escalabilidade
+  replicas: 2
   selector:
     matchLabels:
       app: persistencia-api
@@ -22,6 +25,13 @@ spec:
       annotations:
         pod-version: "v1"
     spec:
+      initContainers:
+        - name: wait-for-sqlserver
+          image: mcr.microsoft.com/mssql-tools
+          command: 
+            - /bin/sh
+            - -c
+            - until /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P "1q2w3e4r@#$" -Q "SELECT 1"; do echo waiting for sqlserver; sleep 2; done;
       containers:
         - name: persistencia-api
           image: carlosalbertofilho/fiap-contatos-persistencia-api:arm64-latest
@@ -57,6 +67,29 @@ spec:
                 configMapKeyRef:
                   name: fiap-config
                   key: rabbitmq-port
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
           volumeMounts:
             - name: persistencia-data
               mountPath: /app

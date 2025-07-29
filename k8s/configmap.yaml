@@ -11,3 +11,5 @@ data:
   rabbitmq-user: "admin"
   rabbitmq-pass: "admin"
   rabbitmq-port: "5672"
+  cadastro-api-url: "http://fiap.cadastro_api:8080"
+  persistencia-api-url: "http://fiap.persistencia_api:8080"

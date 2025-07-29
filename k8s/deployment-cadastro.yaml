@@ -33,7 +33,10 @@ spec:
             - name: ASPNETCORE_URLS
               value: "http://+:8080"
             - name: PersistenciaApiUrl
-              value: "http://persistencia-api:8080"
+              valueFrom:
+                configMapKeyRef:
+                  name: fiap-config
+                  key: persistencia-api-url
           volumeMounts:
             - name: cadastro-data
               mountPath: /app
