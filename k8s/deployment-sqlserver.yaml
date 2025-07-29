@@ -27,6 +27,13 @@ spec:
               value: "1q2w3e4r@#$"
             - name: MSSQL_PID
               value: "Express"
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "500m"
+            limits:
+              memory: "4Gi"
+              cpu: "1"
           volumeMounts:
             - name: mssql-data
               mountPath: /var/opt/mssql
