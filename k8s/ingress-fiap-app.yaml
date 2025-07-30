@@ -59,13 +59,4 @@ spec:
                 name: rabbitmq
                 port:
                   number: 15672
-    - host: sqlserver.local
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: sqlserver
-                port:
-                  number: 1433
+    
