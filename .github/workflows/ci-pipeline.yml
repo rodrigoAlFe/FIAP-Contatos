@@ -1,5 +1,15 @@
+
+name: .NET Build and Test (ci-pipeline)
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -24,6 +34,6 @@ jobs:
         run: dotnet test test/Domain.Test/Domain.Test.csproj --configuration Release --verbosity normal
 
       - name: Executa os testes de integracao
-        env:
+        env: 
           ASPNETCORE_ENVIRONMENT: Testing
         run: dotnet test test/Infrastructure.Test/Infrastructure.Test.csproj --configuration Release --verbosity normal --logger "console;verbosity=normal"
