@@ -37,6 +37,26 @@ spec:
                 configMapKeyRef:
                   name: fiap-config
                   key: persistencia-api-url
+            - name: RabbitMq__Host
+              valueFrom:
+                configMapKeyRef:
+                  name: fiap-config
+                  key: rabbitmq-host
+            - name: RabbitMq__User
+              valueFrom:
+                configMapKeyRef:
+                  name: fiap-config
+                  key: rabbitmq-user
+            - name: RabbitMq__Pass
+              valueFrom:
+                configMapKeyRef:
+                  name: fiap-config
+                  key: rabbitmq-pass
+            - name: RabbitMq__Port
+              valueFrom:
+                configMapKeyRef:
+                  name: fiap-config
+                  key: rabbitmq-port
           volumeMounts:
             - name: cadastro-data
               mountPath: /app/data
