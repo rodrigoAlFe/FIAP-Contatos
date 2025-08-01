@@ -10,10 +10,10 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseEnvironment("Testing");
-        builder.ConfigureServices(services =>
+        builder.UseEnvironment("Testing"); // força uso do appsettings.Testing.json
+        builder.ConfigureServices((context, services) =>
         {
-            // Remove AppDbContext e DbContextOptions
+            // Remove possíveis registros antigos do contexto
             var descriptors = services
                 .Where(d =>
                     d.ServiceType == typeof(DbContextOptions<AppDbContext>) ||
@@ -22,37 +22,35 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             foreach (var descriptor in descriptors)
                 services.Remove(descriptor);
 
-            // Remove RabbitMQ consumer
+            // Remove RabbitMQ consumer (opcional, se não quer rodar Rabbit nos testes)
             var rabbitDescriptor = services.SingleOrDefault(
                 d => d.ImplementationType == typeof(RabbitMqContatoConsumer));
             if (rabbitDescriptor != null)
                 services.Remove(rabbitDescriptor);
 
+            // Remove qualquer provider antigo
             var toRemove = services
-    .Where(d =>
-        (d.ServiceType.FullName?.Contains("SqlServer", StringComparison.OrdinalIgnoreCase) ?? false) ||
-        (d.ImplementationType?.FullName?.Contains("SqlServer", StringComparison.OrdinalIgnoreCase) ?? false) ||
-        (d.ServiceType.FullName?.Contains("InMemory", StringComparison.OrdinalIgnoreCase) ?? false) ||
-        (d.ImplementationType?.FullName?.Contains("InMemory", StringComparison.OrdinalIgnoreCase) ?? false) ||
-        (d.ServiceType.FullName?.Contains("DbContext", StringComparison.OrdinalIgnoreCase) ?? false) ||
-        (d.ImplementationType?.FullName?.Contains("DbContext", StringComparison.OrdinalIgnoreCase) ?? false)
-    ).ToList();
+                .Where(d =>
+                    (d.ServiceType.FullName?.Contains("InMemory", StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (d.ImplementationType?.FullName?.Contains("InMemory", StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (d.ServiceType.FullName?.Contains("DbContext", StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (d.ImplementationType?.FullName?.Contains("DbContext", StringComparison.OrdinalIgnoreCase) ?? false)
+                ).ToList();
 
             foreach (var d in toRemove) services.Remove(d);
 
-
-            // Adiciona o banco InMemory
+            // Adiciona o banco SQL Server (pega a connection string dos appsettings)
+            var connectionString = context.Configuration["ConnectionStrings:DefaultConnection"];
             services.AddDbContext<AppDbContext>(options =>
             {
-                options.UseInMemoryDatabase("TestDb");
+                options.UseSqlServer(connectionString);
             });
 
-            // Garante que o banco está criado
+            // Garante que o banco está criado (CUIDADO: Isso executa Migrations no banco real!)
             var sp = services.BuildServiceProvider();
             using var scope = sp.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             db.Database.EnsureCreated();
         });
     }
-
 }
