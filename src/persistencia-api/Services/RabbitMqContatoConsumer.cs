@@ -14,15 +14,24 @@ public class RabbitMqContatoConsumer : BackgroundService
     private readonly IConfiguration _configuration;
     private IConnection? _connection;
     private IModel? _channel;
+    private readonly IHostEnvironment _env;  // Injetar o ambiente
 
-    public RabbitMqContatoConsumer(IServiceProvider serviceProvider, IConfiguration configuration)
+    public RabbitMqContatoConsumer(IServiceProvider serviceProvider, IConfiguration configuration, IHostEnvironment env)
     {
         _serviceProvider = serviceProvider;
         _configuration = configuration;
+        _env = env;
     }
 
     public override Task StartAsync(CancellationToken cancellationToken)
-    {
+
+    { // Se estiver no ambiente "Testing", não inicializa RabbitMQ
+        if (_env.IsEnvironment("Testing"))
+        {
+            // pula conexão e canal
+            return Task.CompletedTask;
+        }
+
         var factory = new ConnectionFactory()
         {
             HostName = _configuration.GetValue<string>("RabbitMq:Host") ?? "localhost",
