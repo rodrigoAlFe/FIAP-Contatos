@@ -2,6 +2,7 @@ version: '3.8'
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    profiles: ["amd64", "arm64"]
     container_name: fiap.sqlserver
     restart: always
     environment:
@@ -22,6 +23,7 @@ services:
 
   rabbitmq:
     image: masstransit/rabbitmq
+    profiles: ["amd64", "arm64"]
     container_name: fiap.rabbitmq
     ports:
       - "5672:5672" # Porta de comunicação com aplicações (AMQP)
@@ -32,12 +34,40 @@ services:
     networks:
       - app_network
 
+  prometheus:
+    image: prom/prometheus:latest
+    profiles: ["amd64", "arm64"]
+    container_name: prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - app_network
+
+  grafana:
+    image: grafana/grafana:latest
+    profiles: ["amd64", "arm64"]
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - app_network
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+
   persistencia-api:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/amd64/Dockerfile
       target: persistencia-api
     container_name: fiap.persistencia_api
+    profiles: ["amd64"]
     depends_on:
       sqlserver:
        condition: service_healthy
@@ -56,16 +86,16 @@ services:
     networks:
       - app_network
     restart: always
-    command: [ "dotnet", "persistencia-api.dll" ]
     volumes:
       - persistencia_data:/app
 
   cadastro-api:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/amd64/Dockerfile
       target: cadastro-api
     container_name: fiap.cadastro_api
+    profiles: ["amd64"]
     depends_on:
       - persistencia-api
       - rabbitmq
@@ -77,34 +107,58 @@ services:
       - "8082:8080"
     networks:
       - app_network
-    command: [ "dotnet", "cadastro-api.dll" ]
     volumes:
       - cadastro_data:/app
 
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    restart: always
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - app_network
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    restart: always
-    ports:
-      - "3000:3000"
-    networks:
-      - app_network
+  persistencia-api-arm64:
+    build:
+      context: ..
+      dockerfile: docker/arm64/Dockerfile
+      target: persistencia-api
+    container_name: fiap.persistencia_api
+    profiles: ["arm64"]
+    depends_on:
+      sqlserver:
+       condition: service_healthy
+      rabbitmq:
+        condition: service_started
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=fiap.sqlserver,1433;Database=Contato-FIAP;User ID=sa;Password=1q2w3e4r@#$;Trusted_Connection=False; TrustServerCertificate=True;
+      - RabbitMq__Host=rabbitmq
+      - RabbitMq__User=admin
+      - RabbitMq__Pass=admin
+      - RabbitMq__Port=5672
+    ports:
+      - "8080:8080"
+    networks:
+      - app_network
+    restart: always
     volumes:
-      - grafana_data:/var/lib/grafana
+      - persistencia_data:/app
+
+  cadastro-api-arm64:
+    build:
+      context: ..
+      dockerfile: docker/arm64/Dockerfile
+      target: cadastro-api
+    container_name: fiap.cadastro_api
+    profiles: ["arm64"]
+    depends_on:
+      - persistencia-api-arm64
+      - rabbitmq
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Development 
+      - PersistenciaApiUrl=http://fiap.persistencia_api:8080
+    ports:
+      - "8082:8080"
+    networks:
+      - app_network
+    volumes:
+      - cadastro_data:/app
+
 
 networks:
   app_network:
@@ -112,6 +166,6 @@ networks:
 
 volumes:
   sqlserver_data:
+  grafana_data:
   persistencia_data:
   cadastro_data:
-  grafana_data:
