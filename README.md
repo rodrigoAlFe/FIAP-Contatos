@@ -157,8 +157,9 @@ Os projetos na pasta test garantem a qualidade do código por meio de testes aut
 A estrutura do projeto é organizada da seguinte forma:
 ```
 FIAP-Contatos/
+├── k8s/
 ├── docker/
-│   ├── [docker-compose.yml](http://_vscodecontentref_/1)
+│   ├── docker-compose.yml
 │   ├── amd64/
 │   │   └── Dockerfile
 │   └── arm64/
