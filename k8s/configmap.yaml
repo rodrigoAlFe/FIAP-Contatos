@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fiap-config
+  namespace: fiap-app
+  labels:
+    app: fiap
+data:
+  persistencia-connection: "Server=sqlserver.fiap-app,1433;Database=Contato-FIAP;User ID=sa;Password=1q2w3e4r@#$;Trusted_Connection=False;TrustServerCertificate=True;"
+  rabbitmq-host: "rabbitmq.fiap-app"
+  rabbitmq-user: "admin"
+  rabbitmq-pass: "admin"
+  rabbitmq-port: "5672"
+  grafana-user: "admin"
+  grafana-pass: "admin"
+  grafana-url: "http://grafana.fiap-app"
+  cadastro-api-url: "http://cadastro-api.fiap-app:8080"
+  persistencia-api-url: "http://persistencia-api.fiap-app:8080"

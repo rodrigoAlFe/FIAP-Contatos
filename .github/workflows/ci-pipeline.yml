@@ -1,3 +1,4 @@
+
 name: .NET Build and Test (ci-pipeline)
 
 on:
@@ -18,16 +19,21 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '8.0.x'
 
       - name: Restaura as dependencias
         run: dotnet restore
 
-      - name: Builda a aplicação
-        run: dotnet build src/FIAP.Contatos/FIAP.Contatos.csproj --no-restore --configuration Release
+      - name: Builda a aplicação de cadastro
+        run: dotnet build src/cadastro-api/cadastro-api.csproj --no-restore --configuration Release
+
+      - name: Builda a aplicação de persistencia
+        run: dotnet build src/persistencia-api/persistencia-api.csproj --no-restore --configuration Release
 
       - name: Executa os testes unitários
         run: dotnet test test/Domain.Test/Domain.Test.csproj --configuration Release --verbosity normal
 
       - name: Executa os testes de integracao
-        run: dotnet test test/Infrastructure.Test/Infrastructure.Test.csproj --configuration Release --verbosity normal
+        env: 
+          ASPNETCORE_ENVIRONMENT: Testing
+        run: dotnet test test/Infrastructure.Test/Infrastructure.Test.csproj --configuration Release --verbosity normal --logger "console;verbosity=normal"
